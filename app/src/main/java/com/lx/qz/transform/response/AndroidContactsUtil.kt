@@ -7,9 +7,9 @@ import android.provider.ContactsContract.*
 import android.util.Log
 import com.dd.plist.NSData
 import com.dd.plist.NSDictionary
-import com.lx.qz.MainActivity
 import com.lx.qz.transform.MessageException
 import com.lx.qz.utils.LogHelper
+import com.lx.qz.utils.RequestPermissionUtils
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -27,7 +27,7 @@ object AndroidContactsUtil {
     open fun getContactCount(context:Context) : Int  {
         Log.e(TAG, "getContactCount start")
         LogHelper.getInstance().saveLog("开始获取联系人总数...\n")
-        MainActivity.permissionDelegate?.requestRuntimePermission(Manifest.permission.READ_CONTACTS)
+        RequestPermissionUtils.requestRuntimePermission(Manifest.permission.READ_CONTACTS)
         contactIdArray.clear()
         var cursor : Cursor? = null
         try {

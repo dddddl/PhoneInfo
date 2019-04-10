@@ -10,6 +10,7 @@ import com.dd.plist.NSDictionary
 import com.lx.qz.MainActivity
 import com.lx.qz.transform.MessageException
 import com.lx.qz.utils.LogHelper
+import com.lx.qz.utils.RequestPermissionUtils
 import java.util.*
 
 /**
@@ -24,7 +25,7 @@ object AndroidCallHistoryUtil {
     open fun getCallHistoryCount(context: Context): Int {
         LogHelper.getInstance().saveLog("开始获取通话记录总数...\n")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            MainActivity.permissionDelegate?.requestRuntimePermission(Manifest.permission.READ_CALL_LOG)
+            RequestPermissionUtils.requestRuntimePermission(Manifest.permission.READ_CALL_LOG)
         }
         callHistoryArray.clear()
         try {

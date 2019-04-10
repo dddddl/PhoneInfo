@@ -8,7 +8,7 @@ import com.lx.qz.transform.dto.PListDto
 
 class PListTransform(private val context: Context) : Transform<Command, PListDto> {
 
-    override fun map(bytes: ByteArray, bytesRead: Int): Command? {
+    override fun map(bytes: ByteArray, bytesRead: Int): Command{
 
         var dataLength = 0
         (0 until 4).forEach { index ->
@@ -91,12 +91,18 @@ class PListTransform(private val context: Context) : Transform<Command, PListDto
                     else -> null
                 }
             }
+            GroupConstant.WifiHistory -> {
+                when (opCodeValue) {
+                    CommandConstant.WifiHistory -> WifiHistoryCommand(context,GroupConstant.WifiHistory,CommandConstant.WifiHistoryReply)
+                    else -> null
+                }
+            }
             else -> {
                 null
             }
         }
 
-        return command
+        return command!!
     }
 
     override fun parse(pListDto: PListDto): ByteArray {

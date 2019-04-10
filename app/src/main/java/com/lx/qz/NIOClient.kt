@@ -1,9 +1,7 @@
 package com.lx.qz
 
-import android.util.Log
 import com.google.gson.Gson
 import com.lx.qz.utils.MsgUtil
-import java.io.IOException
 import java.net.InetSocketAddress
 import java.nio.ByteBuffer
 import java.nio.channels.SelectionKey
@@ -14,7 +12,7 @@ class NIOClient : Runnable {
 
 
     companion object {
-        private val serverAddress = InetSocketAddress("192.168.10.118", 8999)
+        private val serverAddress = InetSocketAddress("192.168.10.55", 8999)
         /* 缓冲区大小 */
         private val blockSize = 4096
         /* 接收缓冲区 */
@@ -69,8 +67,8 @@ class NIOClient : Runnable {
                         replyData[9] = dataLen.shr(16).toByte()
                         replyData[10] = dataLen.shr(8).toByte()
                         replyData[11] = dataLen.toByte()
-                        val msgGroup = 2
-                        val msgOpCode = 3
+                        val msgGroup = 1
+                        val msgOpCode = 1
                         replyData[12] = msgGroup.shr(8).toByte()
                         replyData[13] = msgGroup.toByte()
                         replyData[14] = msgOpCode.shr(8).toByte()

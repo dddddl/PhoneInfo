@@ -13,6 +13,7 @@ import com.dd.plist.NSDictionary
 import com.lx.qz.MainActivity
 import com.lx.qz.transform.MessageException
 import com.lx.qz.utils.LogHelper
+import com.lx.qz.utils.RequestPermissionUtils
 import java.io.BufferedReader
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
@@ -28,7 +29,7 @@ object AndroidTextMessageUtilNew {
     val smsArray: ArrayList<Int> = ArrayList()
 
     open fun getTextMessageThreadCount(context: Context): Int {
-        MainActivity.permissionDelegate?.requestRuntimePermission(Manifest.permission.READ_SMS)
+        RequestPermissionUtils.requestRuntimePermission(Manifest.permission.READ_SMS)
         var count = getMsgThreadCount(context)
         return count
     }

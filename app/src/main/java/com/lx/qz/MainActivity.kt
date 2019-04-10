@@ -1,11 +1,10 @@
 package com.lx.qz
 
-import android.Manifest
-import android.support.v7.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import com.lx.qz.server.TCPServer
-import com.lx.qz.transform.MessageException
+import com.lx.qz.SystemDataService.RemoteConnectionService
 import com.yanzhenjie.permission.AndPermission
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.HashMap
@@ -32,8 +31,7 @@ class MainActivity : AppCompatActivity(), requestRuntimePermissionDelegate {
         setContentView(R.layout.activity_main)
         permissionDelegate = this
 
-        Thread(TCPServer(applicationContext)).start()
-
+        startService(Intent(this, RemoteConnectionService::class.java))
 
         start.setOnClickListener {
             Log.e("", "client start")
