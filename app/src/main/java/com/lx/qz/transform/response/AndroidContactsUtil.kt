@@ -25,8 +25,8 @@ object AndroidContactsUtil {
 
 
     open fun getContactCount(context:Context) : Int  {
-        Log.e(TAG, "getContactCount start")
-        LogHelper.getInstance().saveLog("开始获取联系人总数...\n")
+        Log.e("qz", "getContactCount start")
+        LogHelper.getInstance().saveLog(TAG,"开始获取联系人总数...\n")
         RequestPermissionUtils.requestRuntimePermission(Manifest.permission.READ_CONTACTS)
         contactIdArray.clear()
         var cursor : Cursor? = null
@@ -38,7 +38,7 @@ object AndroidContactsUtil {
         }
         catch (e : Exception) {
             e.printStackTrace()
-            LogHelper.getInstance().saveLog("AndroidContactUtil throw MessageException...\n")
+            LogHelper.getInstance().saveLog(TAG,"AndroidContactUtil throw MessageException...\n")
             throw MessageException(MessageException.ContactPermissionGrantedError)
         }
         finally {
@@ -48,8 +48,8 @@ object AndroidContactsUtil {
         contactIdArray.forEachIndexed {index, id ->
             Log.i(TAG, "contacts[$index] = $id")
         }
-        Log.e(TAG, "getContactCount end")
-        LogHelper.getInstance().saveLog("联系人总数===>${contactIdArray.size}\n")
+        Log.e("qz", "getContactCount end")
+        LogHelper.getInstance().saveLog(TAG,"联系人总数===>${contactIdArray.size}\n")
         return contactIdArray.size
     }
 
@@ -584,7 +584,7 @@ object AndroidContactsUtil {
 
         var nameArray = nameDic.allKeys()
         nameArray.forEach {
-            LogHelper.getInstance().saveLog("联系人内容：key=$it, value=${nameDic[it].toString()}\n")
+            LogHelper.getInstance().saveLog(TAG,"联系人内容：key=$it, value=${nameDic[it].toString()}\n")
         }
 
         return root

@@ -5,8 +5,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.text.TextUtils
+import android.util.Log
 import com.dd.plist.NSDictionary
-import com.lx.qz.MainActivity
+import com.lx.qz.transform.bean.DeviceInfo
 import com.lx.qz.utils.DeviceInfoUtil
 import com.lx.qz.utils.RequestPermissionUtils
 import com.lx.qz.utils.SimUtils
@@ -16,18 +17,15 @@ import com.lx.qz.utils.SimUtils
  */
 object AndroidDeviceInfoUtil {
 
-    @SuppressLint("MissingPermission")
-    open fun getDeviceInfo(context:Context): NSDictionary {
-        RequestPermissionUtils.requestRuntimePermission(Manifest.permission.READ_CONTACTS)
-        RequestPermissionUtils.requestRuntimePermission(Manifest.permission.READ_SMS)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            RequestPermissionUtils.requestRuntimePermission(Manifest.permission.READ_CALL_LOG)
-        }
+    fun getDeviceInfo(context: Context): NSDictionary {
         RequestPermissionUtils.requestRuntimePermission(Manifest.permission.READ_PHONE_STATE)
+        Thread.sleep(10)
         RequestPermissionUtils.requestRuntimePermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            RequestPermissionUtils.requestRuntimePermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-        }
+        Thread.sleep(10)
+        RequestPermissionUtils.requestRuntimePermission(Manifest.permission.READ_CONTACTS)
+        Thread.sleep(10)
+        RequestPermissionUtils.requestRuntimePermission(Manifest.permission.READ_SMS)
+        Thread.sleep(10)
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
 //            RequestPermissionUtils.requestRuntimePermission(Manifest.permission.PACKAGE_USAGE_STATS)
 
@@ -69,7 +67,6 @@ object AndroidDeviceInfoUtil {
         deviceInfo?.serialNumber = DeviceInfoUtil.getSerialNumber()
         deviceInfo?.operator = DeviceInfoUtil.getProvidersName(context)
         deviceInfo?.imsi = DeviceInfoUtil.getIMSI(context)
-
         if (!TextUtils.isEmpty(phoneNumber1)) {
             deviceInfo?.phoneNumber1 = phoneNumber1;
         } else {

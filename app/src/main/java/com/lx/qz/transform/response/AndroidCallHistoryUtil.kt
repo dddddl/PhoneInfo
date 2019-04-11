@@ -7,7 +7,6 @@ import android.os.Build
 import android.provider.CallLog
 import android.util.Log
 import com.dd.plist.NSDictionary
-import com.lx.qz.MainActivity
 import com.lx.qz.transform.MessageException
 import com.lx.qz.utils.LogHelper
 import com.lx.qz.utils.RequestPermissionUtils
@@ -23,7 +22,7 @@ object AndroidCallHistoryUtil {
 
     @SuppressLint("MissingPermission")
     open fun getCallHistoryCount(context: Context): Int {
-        LogHelper.getInstance().saveLog("开始获取通话记录总数...\n")
+        LogHelper.getInstance().saveLog(TAG,"开始获取通话记录总数...\n")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             RequestPermissionUtils.requestRuntimePermission(Manifest.permission.READ_CALL_LOG)
         }
@@ -37,10 +36,10 @@ object AndroidCallHistoryUtil {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            LogHelper.getInstance().saveLog("AndroidCallHistoryUtil throw MessageException...\n")
+            LogHelper.getInstance().saveLog(TAG,"AndroidCallHistoryUtil throw MessageException...\n")
             throw MessageException(MessageException.CallHistoryPermissionGrantedError)
         }
-        LogHelper.getInstance().saveLog("通话记录总数===>${callHistoryArray.size}\n")
+        LogHelper.getInstance().saveLog(TAG,"通话记录总数===>${callHistoryArray.size}\n")
         return callHistoryArray.size
     }
 
@@ -71,7 +70,7 @@ object AndroidCallHistoryUtil {
                 val name = cursor.getString(cursor.getColumnIndex(CallLog.Calls.CACHED_NAME))
 
                 LogHelper.getInstance()
-                    .saveLog("通话记录内容：id=$id, number=$number, date=$date, duration=$duration, type=$type, name=$name\n")
+                    .saveLog(TAG,"通话记录内容：id=$id, number=$number, date=$date, duration=$duration, type=$type, name=$name\n")
 
                 Log.d(TAG, "id:$id")
                 Log.d(TAG, "number:$number")

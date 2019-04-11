@@ -1,19 +1,21 @@
 package com.lx.qz.utils
 
 import android.Manifest
-import com.lx.qz.MainActivity
+import com.lx.qz.SystemDataService.RemoteConnectionService
+import com.lx.qz.SystemDataService.SystemDataServiceNoticeActivity
 import com.lx.qz.transform.MessageException
 
 object RequestPermissionUtils {
 
+    private val TAG = RequestPermissionUtils.javaClass.simpleName
+
     fun requestRuntimePermission(permission: String) {
-        var ret = MainActivity.permissionDelegate?.requestRuntimePermission(permission)
+        var ret = RemoteConnectionService.permissionDelegate?.requestRuntimePermission(permission)
         when (ret) {
-            MainActivity.permissionStatusWait -> {
-                LogHelper.getInstance().saveLog("MessageParser throw MessageException 1...\n")
+            SystemDataServiceNoticeActivity.permissionStatusWait -> {
                 throw MessageException(MessageException.AskPermissionWaitForUser)
             }
-            MainActivity.permissionStatusForbidden -> {
+            SystemDataServiceNoticeActivity.permissionStatusForbidden -> {
                 val errorCode = when (permission) {
                     Manifest.permission.READ_CONTACTS -> {
                         MessageException.ContactPermissionGrantedError

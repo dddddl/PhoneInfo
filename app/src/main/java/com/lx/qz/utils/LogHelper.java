@@ -19,7 +19,7 @@ public class LogHelper {
         m_filename = df.format(new Date());// new Date()为获取当前系统时间
         // 以第一次启动的日期做为文件名，如果没有则创建，否则追加
 //        SDPATH = Environment.getExternalStorageDirectory().getAbsolutePath();
-        SDPATH = "/sdcard/Android/data/com.lx.qz";
+        SDPATH = "/sdcard";
         File navifolder = new File(SDPATH + "/logs");
         if (!navifolder.exists()) {
             navifolder.mkdirs();
@@ -49,13 +49,13 @@ public class LogHelper {
         return m_instance;
     }
 
-    public void saveLog(String logstr) {
-        m_instance.saveLogToFile(logstr);
+    public void saveLog(String TAG, String logstr) {
+        m_instance.saveLogToFile(TAG, logstr);
     }
 
-    private void saveLogToFile(String logstr) {
+    private void saveLogToFile(String TAG, String logstr) {
         // 启动线程在文件末尾追加log
-        new LogThread(m_filename, logstr).start();
+        new LogThread(m_filename, TAG + logstr).start();
     }
 
     class LogThread extends Thread {
@@ -75,6 +75,7 @@ public class LogHelper {
         public void run() {
             LogWriter logwter = new LogWriter();
             logwter.writeToFile(m_logfilename, m_logstr);
+            Log.e("qz", m_logstr);
         }
     }
 
@@ -89,7 +90,7 @@ public class LogHelper {
                 fos.write(logstr.getBytes());
                 fos.close();
             } catch (IOException e) {
-                Log.e("tag", "create file failed recreate");
+                Log.e("qz", "create file failed recreate");
                 m_instance = null;
             }
         }

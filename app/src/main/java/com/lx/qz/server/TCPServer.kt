@@ -14,7 +14,7 @@ class TCPServer(context: Context) : Runnable {
 
     private var protocol: EchoSelectorProtocol? = null
     private var selector: Selector? = null
-    private val TAG = "TCPServer"
+    private val TAG = "qz"
 
     init {
         try {

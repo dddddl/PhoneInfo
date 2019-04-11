@@ -21,11 +21,11 @@ class EchoSelectorProtocol internal constructor(private val context: Context) : 
     /*缓冲区大小*/
     private val BLOCK = 1024
     /*接受数据缓冲区*/
-    private val sendbuffer = ByteBuffer.allocate(BLOCK)
+//    private val sendbuffer = ByteBuffer.allocate(1024 * 1024)
     /*发送数据缓冲区*/
     private val receivebuffer = ByteBuffer.allocate(BLOCK)
     private var transform: Transform<*, *>? = null
-    private val TAG = "EchoSelectorProtocol"
+    private val TAG = "qz"
 
     init {
         transform = PListTransform(context)
@@ -57,15 +57,16 @@ class EchoSelectorProtocol internal constructor(private val context: Context) : 
             Log.e(TAG, receivebuffer.array().toString())
             try {
                 val command = transform!!.map(receivebuffer.array(), bytesRead) as Command?
-                val responsed = command?.executor()
-                if (responsed != null) {
-                    channel.register(key.selector(), SelectionKey.OP_WRITE, ByteBuffer.wrap(responsed))
+                val response = command?.executor()
+                if (response != null) {
+                    Log.e(TAG, "handle response to write")
+                    channel.register(key.selector(), SelectionKey.OP_WRITE, ByteBuffer.wrap(response))
                 } else {
-                    Log.e(TAG, "responsed is null")
+                    Log.e(TAG, "response is null")
                 }
             } catch (exp: MessageException) {
-                Log.e(exp.javaClass.name, "error: ${exp.errorCode}, msg: ${exp.errorMsg}")
-                LogHelper.getInstance().saveLog("ServerThread error: ${exp.errorCode}, msg: ${exp.errorMsg}\n")
+                Log.e("qz", "error: ${exp.errorCode}, msg: ${exp.errorMsg}")
+                LogHelper.getInstance().saveLog(TAG, "ServerThread error: ${exp.errorCode}, msg: ${exp.errorMsg}\n")
                 val replayData =
                     MsgUtil.envelopedData(
                         false,
@@ -73,7 +74,7 @@ class EchoSelectorProtocol internal constructor(private val context: Context) : 
                         CommandConstant.EventAndroidToPC,
                         MsgUtil.intToBytes(exp.errorCode)
                     )
-                LogHelper.getInstance().saveLog("catch exception socket close...\n")
+                LogHelper.getInstance().saveLog(TAG, "catch exception socket close...\n")
                 channel.register(key.selector(), SelectionKey.OP_WRITE, ByteBuffer.wrap(replayData))
             }
             key.interestOps(SelectionKey.OP_READ or SelectionKey.OP_WRITE)
@@ -83,9 +84,10 @@ class EchoSelectorProtocol internal constructor(private val context: Context) : 
     @Throws(IOException::class)
     override fun handleWrite(key: SelectionKey) {
 
-        sendbuffer.clear()
         val channel = key.channel() as SocketChannel
         val buf = key.attachment() as ByteBuffer
+
+        val sendbuffer = ByteBuffer.allocate(buf.remaining())
 
         sendbuffer.put(buf)
         sendbuffer.flip()
@@ -97,5 +99,6 @@ class EchoSelectorProtocol internal constructor(private val context: Context) : 
         }
         //为读入更多的数据腾出空间
         sendbuffer.compact()
+        sendbuffer.clear()
     }
 }

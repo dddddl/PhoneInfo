@@ -1,6 +1,7 @@
 package com.lx.qz.transform.command
 
 import android.content.Context
+import android.util.Log
 import com.lx.qz.transform.response.AndroidContactsUtil
 import com.lx.qz.utils.MsgUtil
 
@@ -11,7 +12,12 @@ class ContactCommand(
     private val rawData: ByteArray?
 ) :
     Command {
+
+    val TAG = ContactCommand::class.java.simpleName
+
     override fun executor(): ByteArray {
+
+        Log.e("qz", "ContactCommand execute...")
 
         var index = 0
         if (rawData?.size == 4) {

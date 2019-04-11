@@ -1,4 +1,4 @@
-package com.lx.qz.transform.response
+package com.lx.qz.transform.bean
 
 /**
  * Created by LENOVO on 2018/9/10.

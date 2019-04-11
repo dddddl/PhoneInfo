@@ -171,7 +171,7 @@ public class DeviceInfoUtil {
             field.setAccessible(true);
             Object bluetoothManagerService = field.get(bluetoothAdapter);
             if (bluetoothManagerService == null) {
-                return null;
+                return "未知";
             }
             Method method = bluetoothManagerService.getClass().getMethod("getAddress");
             if(method != null) {

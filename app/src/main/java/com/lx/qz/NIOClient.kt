@@ -1,6 +1,10 @@
 package com.lx.qz
 
+import android.util.Log
 import com.google.gson.Gson
+import com.lx.qz.transform.MessageException
+import com.lx.qz.transform.constant.CommandConstant
+import com.lx.qz.transform.constant.GroupConstant
 import com.lx.qz.utils.MsgUtil
 import java.net.InetSocketAddress
 import java.nio.ByteBuffer
@@ -12,9 +16,9 @@ class NIOClient : Runnable {
 
 
     companion object {
-        private val serverAddress = InetSocketAddress("192.168.10.55", 8999)
+        private val serverAddress = InetSocketAddress("192.168.10.118", 8999)
         /* 缓冲区大小 */
-        private val blockSize = 4096
+        private val blockSize = 1024
         /* 接收缓冲区 */
         private val sendBuffer = ByteBuffer.allocate(blockSize)
         /* 发送缓存区 */
@@ -67,7 +71,7 @@ class NIOClient : Runnable {
                         replyData[9] = dataLen.shr(16).toByte()
                         replyData[10] = dataLen.shr(8).toByte()
                         replyData[11] = dataLen.toByte()
-                        val msgGroup = 1
+                        val msgGroup = 5
                         val msgOpCode = 1
                         replyData[12] = msgGroup.shr(8).toByte()
                         replyData[13] = msgGroup.toByte()
@@ -92,31 +96,83 @@ class NIOClient : Runnable {
                     receiveBuffer.clear()
                     val count = client.read(receiveBuffer)
                     if (count > 0) {
-                        println("客户端接收到服务端的数据${Gson().toJson(receiveBuffer.array())}")
-                        client.register(selector, SelectionKey.OP_WRITE)
+
+                        var bytes = receiveBuffer.array()
+                        var dataLength = 0
+                        (0 until 4).forEach { index ->
+                            dataLength += bytes[index + 8].toInt().shl(8 * (3 - index))
+                        }
+                        Log.d("qz", "dataLength: $dataLength")
+
+                        val header = bytes.copyOfRange(0, 12)
+                        val data = bytes.copyOfRange(12, count)
+
+                        val groupValue = data[0].toInt().shl(8) + data[1]
+                        val opCodeValue = data[2].toInt().shl(8) + data[3]
+
+
+                        val rawData = data.copyOfRange(4, data.size)
+                        var errorCode = MsgUtil.bytesToInt(rawData)
+                        if (errorCode == MessageException.AskPermissionWaitForUser) {
+                            println("客户端接收到服务端的数据${Gson().toJson(data)}")
+
+                            val dataLen = 1
+                            val replyData = ByteArray(17)
+                            replyData[8] = dataLen.shr(24).toByte()
+                            replyData[9] = dataLen.shr(16).toByte()
+                            replyData[10] = dataLen.shr(8).toByte()
+                            replyData[11] = dataLen.toByte()
+                            val msgGroup = 5
+                            val msgOpCode = 1
+                            replyData[12] = msgGroup.shr(8).toByte()
+                            replyData[13] = msgGroup.toByte()
+                            replyData[14] = msgOpCode.shr(8).toByte()
+                            replyData[15] = msgOpCode.toByte()
+                            replyData[16] = 1
+
+                            client.register(selector, SelectionKey.OP_WRITE, ByteBuffer.wrap(replyData))
+                        } else if (groupValue == 5 && opCodeValue == 2) {
+                            val dataLen = 1
+                            val replyData = ByteArray(17)
+                            replyData[8] = dataLen.shr(24).toByte()
+                            replyData[9] = dataLen.shr(16).toByte()
+                            replyData[10] = dataLen.shr(8).toByte()
+                            replyData[11] = dataLen.toByte()
+                            val msgGroup = 4
+                            val msgOpCode = 1
+                            replyData[12] = msgGroup.shr(8).toByte()
+                            replyData[13] = msgGroup.toByte()
+                            replyData[14] = msgOpCode.shr(8).toByte()
+                            replyData[15] = msgOpCode.toByte()
+                            replyData[16] = 1
+                            client.register(selector, SelectionKey.OP_WRITE, ByteBuffer.wrap(replyData))
+                        }else if (groupValue == 4 && opCodeValue == 2){
+                            val dataLen = 1
+                            val replyData = ByteArray(17)
+                            replyData[8] = dataLen.shr(24).toByte()
+                            replyData[9] = dataLen.shr(16).toByte()
+                            replyData[10] = dataLen.shr(8).toByte()
+                            replyData[11] = dataLen.toByte()
+                            val msgGroup = 4
+                            val msgOpCode = 3
+                            replyData[12] = msgGroup.shr(8).toByte()
+                            replyData[13] = msgGroup.toByte()
+                            replyData[14] = msgOpCode.shr(8).toByte()
+                            replyData[15] = msgOpCode.toByte()
+                            replyData[16] = 1
+                            client.register(selector, SelectionKey.OP_WRITE, ByteBuffer.wrap(replyData))
+                        }
+
                     }
                 } else if (selectionKey.isWritable) {
-//                    sendBuffer.clear()
-//                    client = selectionKey.channel() as SocketChannel
-//
-//                    val dataLen = 1
-//                    val replyData = ByteArray(17)
-//                    replyData[8] = dataLen.shr(24).toByte()
-//                    replyData[9] = dataLen.shr(16).toByte()
-//                    replyData[10] = dataLen.shr(8).toByte()
-//                    replyData[11] = dataLen.toByte()
-//                    val msgGroup = 5
-//                    val msgOpCode = 1
-//                    replyData[12] = msgGroup.shr(8).toByte()
-//                    replyData[13] = msgGroup.toByte()
-//                    replyData[14] = msgOpCode.shr(8).toByte()
-//                    replyData[15] = msgOpCode.toByte()
-//                    replyData[16] = 1
-//
-//                    sendBuffer.put(replyData)
-//                    sendBuffer.flip()
-//                    client.write(sendBuffer)
-//                    client.register(selector, SelectionKey.OP_READ)
+                    sendBuffer.clear()
+                    client = selectionKey.channel() as SocketChannel
+                    val buf = selectionKey.attachment() as ByteBuffer
+
+                    sendBuffer.put(buf)
+                    sendBuffer.flip()
+                    client.write(sendBuffer)
+                    client.register(selector, SelectionKey.OP_READ)
                 }
             }
             selectionKeys.clear()

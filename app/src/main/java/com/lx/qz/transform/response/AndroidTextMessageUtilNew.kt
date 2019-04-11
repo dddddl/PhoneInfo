@@ -10,7 +10,6 @@ import android.text.TextUtils
 import android.util.Log
 import com.dd.plist.NSData
 import com.dd.plist.NSDictionary
-import com.lx.qz.MainActivity
 import com.lx.qz.transform.MessageException
 import com.lx.qz.utils.LogHelper
 import com.lx.qz.utils.RequestPermissionUtils
@@ -249,12 +248,11 @@ object AndroidTextMessageUtilNew {
         root.put("conversation", conversation)
         //Log.i("readAllContactData", root.toXMLPropertyList())
 
-        conversation.forEach { ns ->
-            var nameArray = ns.allKeys()
-            nameArray.forEach {
-                LogHelper.getInstance().saveLog("短信内容：key=$it, value=${ns[it].toString()}\n")
-            }
-        }
+//        conversation.forEach { ns ->
+//            ns.allKeys()?.forEach {
+//                LogHelper.getInstance().saveLog(TAG, "短信内容：key=$it, value=${ns[it].toString()}\n")
+//            }
+//        }
         return root
     }
 
@@ -315,7 +313,7 @@ object AndroidTextMessageUtilNew {
 
     fun getMsgThreadCount(context: Context): Int {
         conversationArray.clear()
-        LogHelper.getInstance().saveLog("开始获取短信总数...\n")
+        LogHelper.getInstance().saveLog(TAG, "开始获取短信总数...\n")
 
         var threadCursor: Cursor? = null
         val uri: Uri
@@ -396,8 +394,8 @@ object AndroidTextMessageUtilNew {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e("sss", e.toString())
-            LogHelper.getInstance().saveLog("AndroidTextMessageUtilNew throw MessageException...\n")
+            Log.e("qz", e.toString())
+            LogHelper.getInstance().saveLog(TAG, "AndroidTextMessageUtilNew throw MessageException...\n")
             throw MessageException(MessageException.TextMessagePermissionGrantedError)
         } finally {
             threadCursor?.close()
@@ -407,7 +405,7 @@ object AndroidTextMessageUtilNew {
             getTextMessageThreadByIndex(index)
         }
         */
-        LogHelper.getInstance().saveLog("短信总数===>${conversationArray.size}\n")
+        LogHelper.getInstance().saveLog(TAG, "短信总数===>${conversationArray.size}\n")
         return conversationArray.size
     }
 

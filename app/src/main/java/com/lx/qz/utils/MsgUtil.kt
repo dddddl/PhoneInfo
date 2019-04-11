@@ -75,7 +75,7 @@ object MsgUtil {
         val checkSum = packet.sum().toByte()
         packet[7] = checkSum
         packet.forEachIndexed { index, byte ->
-            Log.d("Packet", "packet[$index]:$byte")
+//            Log.d("Packet", "packet[$index]:$byte")
         }
     }
 
