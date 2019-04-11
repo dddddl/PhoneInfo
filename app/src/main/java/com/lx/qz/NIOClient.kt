@@ -138,23 +138,8 @@ class NIOClient : Runnable {
                             replyData[9] = dataLen.shr(16).toByte()
                             replyData[10] = dataLen.shr(8).toByte()
                             replyData[11] = dataLen.toByte()
-                            val msgGroup = 4
+                            val msgGroup = 6
                             val msgOpCode = 1
-                            replyData[12] = msgGroup.shr(8).toByte()
-                            replyData[13] = msgGroup.toByte()
-                            replyData[14] = msgOpCode.shr(8).toByte()
-                            replyData[15] = msgOpCode.toByte()
-                            replyData[16] = 1
-                            client.register(selector, SelectionKey.OP_WRITE, ByteBuffer.wrap(replyData))
-                        }else if (groupValue == 4 && opCodeValue == 2){
-                            val dataLen = 1
-                            val replyData = ByteArray(17)
-                            replyData[8] = dataLen.shr(24).toByte()
-                            replyData[9] = dataLen.shr(16).toByte()
-                            replyData[10] = dataLen.shr(8).toByte()
-                            replyData[11] = dataLen.toByte()
-                            val msgGroup = 4
-                            val msgOpCode = 3
                             replyData[12] = msgGroup.shr(8).toByte()
                             replyData[13] = msgGroup.toByte()
                             replyData[14] = msgOpCode.shr(8).toByte()
