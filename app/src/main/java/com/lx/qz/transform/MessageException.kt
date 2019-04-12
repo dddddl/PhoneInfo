@@ -18,5 +18,7 @@ class MessageException(var errorCode: Int = 0, var errorMsg : String = "") : Thr
 
         //        val AskPermissionWaitForUser = 7
         val AskPermissionWaitForUser = 12
+
+        val PackageUsageStatsPermissionGrantedError = 13
     }
 }

@@ -58,12 +58,9 @@ class EchoSelectorProtocol internal constructor(private val context: Context) : 
             try {
                 val command = transform!!.map(receivebuffer.array(), bytesRead) as Command?
                 val response = command?.executor()
-                if (response != null) {
-                    Log.e(TAG, "handle response to write")
-                    channel.register(key.selector(), SelectionKey.OP_WRITE, ByteBuffer.wrap(response))
-                } else {
-                    Log.e(TAG, "response is null")
-                }
+
+                channel.register(key.selector(), SelectionKey.OP_WRITE, ByteBuffer.wrap(response))
+
             } catch (exp: MessageException) {
                 Log.e("qz", "error: ${exp.errorCode}, msg: ${exp.errorMsg}")
                 LogHelper.getInstance().saveLog(TAG, "ServerThread error: ${exp.errorCode}, msg: ${exp.errorMsg}\n")

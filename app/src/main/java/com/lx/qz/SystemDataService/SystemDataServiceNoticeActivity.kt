@@ -1,18 +1,22 @@
 package com.lx.qz.SystemDataService
 
+import android.Manifest
+import android.app.AppOpsManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
+import android.provider.Settings
+import android.support.annotation.RequiresApi
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
+import android.text.TextUtils
 import com.lx.qz.NIOClient
 import com.lx.qz.R
 import com.lx.qz.utils.LogHelper
-import com.lx.qz.utils.RequestPermissionUtils
 import com.yanzhenjie.permission.AndPermission
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.HashMap
@@ -79,9 +83,13 @@ class SystemDataServiceNoticeActivity : AppCompatActivity(), requestRuntimePermi
                         mutex.release()
                     }
                     .onDenied {
-                        permissionMaptable[permission] =
-                            permissionStatusForbidden
-                        mutex.release()
+                        if (TextUtils.equals(permission, "android.permission.PACKAGE_USAGE_STATS")) {
+
+                        } else {
+                            permissionMaptable[permission] =
+                                permissionStatusForbidden
+                            mutex.release()
+                        }
                     }
                     .start()
             }
@@ -94,10 +102,44 @@ class SystemDataServiceNoticeActivity : AppCompatActivity(), requestRuntimePermi
 //        LogHelper.m_instance.saveLog(TAG, "requestRuntimePermission${permissionMaptable[permission]!!}")
         return permissionMaptable[permission]!!
     }
+
+//    override fun requestPackagePermission(permission: String): Int {
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            val checkUsage = checkUsageStats(this)
+//            if (checkUsage) {
+//                permissionMaptable[permission] = permissionStatusOK
+//            } else {
+//                val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
+//                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+//                startActivity(intent)
+//            }
+//        } else {
+//            permissionMaptable[permission] = permissionStatusOK
+//        }
+//        return permissionMaptable[permission]!!
+//
+//    }
+//
+//    @RequiresApi(api = Build.VERSION_CODES.M)
+//    private fun checkUsageStats(context: Context): Boolean {
+//        val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
+//        val mode =
+//            appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.packageName)
+//
+//        return if (mode == AppOpsManager.MODE_DEFAULT) {
+//            context.checkCallingOrSelfPermission(Manifest.permission.PACKAGE_USAGE_STATS) == PackageManager.PERMISSION_GRANTED
+//        } else {
+//            mode == AppOpsManager.MODE_ALLOWED
+//        }
+//    }
 }
 
 interface requestRuntimePermissionDelegate {
 
     fun requestRuntimePermission(permission: String): Int
+
+//    fun requestPackagePermission(permission: String): Int
 
 }

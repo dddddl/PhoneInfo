@@ -17,8 +17,8 @@ class PListTransform(private val context: Context) : Transform<Command, PListDto
             throw MessageException(MessageException.SocketError)
         }
 
-        (0 until bytesRead).forEach{ index ->
-            Log.d("qz","header[$index]: ${bytes[index]}")
+        (0 until bytesRead).forEach { index ->
+            Log.d("qz", "header[$index]: ${bytes[index]}")
         }
 
         var dataLength = 0
@@ -112,12 +112,22 @@ class PListTransform(private val context: Context) : Transform<Command, PListDto
                     else -> throw MessageException()
                 }
             }
+            GroupConstant.ProgramInfo -> {
+                when (opCodeValue) {
+                    CommandConstant.ProgramInfo -> PackageInfoCommand(
+                        context,
+                        GroupConstant.ProgramInfo,
+                        CommandConstant.ProgramInfoReply
+                    )
+                    else -> throw MessageException()
+                }
+            }
             else -> {
-                null
+                throw MessageException()
             }
         }
 
-        return command!!
+        return command
     }
 
     override fun parse(pListDto: PListDto): ByteArray {

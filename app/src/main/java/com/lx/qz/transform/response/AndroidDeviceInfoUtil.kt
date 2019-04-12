@@ -26,8 +26,7 @@ object AndroidDeviceInfoUtil {
         Thread.sleep(10)
         RequestPermissionUtils.requestRuntimePermission(Manifest.permission.READ_SMS)
         Thread.sleep(10)
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-//            RequestPermissionUtils.requestRuntimePermission(Manifest.permission.PACKAGE_USAGE_STATS)
+//        RequestPermissionUtils.requestPackagePermission(Manifest.permission.PACKAGE_USAGE_STATS)
 
         val root = NSDictionary()
 

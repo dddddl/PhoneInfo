@@ -36,7 +36,7 @@ object RequestPermissionUtils {
                         MessageException.ReadExternalStoragePermissionGrantedError
                     }
                     Manifest.permission.PACKAGE_USAGE_STATS -> {
-                        MessageException.ContactPermissionGrantedError  //todo package error
+                        MessageException.PackageUsageStatsPermissionGrantedError
                     }
                     else -> {
                         MessageException.DataError
@@ -47,5 +47,9 @@ object RequestPermissionUtils {
             }
         }
     }
+
+//    fun requestPackagePermission(permission: String){
+//        var ret = RemoteConnectionService.permissionDelegate?.requestPackagePermission(permission)
+//    }
 
 }
