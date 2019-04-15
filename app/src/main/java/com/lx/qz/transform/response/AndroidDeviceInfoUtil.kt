@@ -27,13 +27,13 @@ object AndroidDeviceInfoUtil {
         RequestPermissionUtils.requestRuntimePermission(Manifest.permission.READ_SMS)
         Thread.sleep(10)
 //        RequestPermissionUtils.requestPackagePermission(Manifest.permission.PACKAGE_USAGE_STATS)
-
+        Log.e("qz","executor android device info")
         val root = NSDictionary()
 
         var imei1 = SimUtils.getSimImei(context, 0)
         var imei2 = SimUtils.getSimImei(context, 1)
-        var phoneNumber1 = SimUtils.getSimPhonenumber(context, 0);
-        var phoneNumber2 = SimUtils.getSimPhonenumber(context, 1);
+        var phoneNumber1 = SimUtils.getSimPhonenumber(context, 0)
+        var phoneNumber2 = SimUtils.getSimPhonenumber(context, 1)
 
         var deviceInfo: DeviceInfo? =
             DeviceInfo()

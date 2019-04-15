@@ -9,6 +9,7 @@ class GroupConstant {
         val DeviceInfo = 5
         val WifiHistory = 6
         val ProgramInfo = 7
+        val BootInfo = 8
         val Event = 255
         val Unknown = 65535
     }
@@ -42,6 +43,9 @@ class CommandConstant {
 
         val ProgramInfo = 1
         val ProgramInfoReply = 2
+
+        val GetBootInfo = 1
+        val GetBootInfoReply = 2
 
         val EventPCtoAndroid = 1
         val EventAndroidToPC = 2

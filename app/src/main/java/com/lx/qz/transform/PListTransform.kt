@@ -122,6 +122,16 @@ class PListTransform(private val context: Context) : Transform<Command, PListDto
                     else -> throw MessageException()
                 }
             }
+            GroupConstant.BootInfo -> {
+                when (opCodeValue) {
+                    CommandConstant.GetBootInfo -> BootInfoCommand(
+                        GroupConstant.BootInfo,
+                        CommandConstant.GetBootInfoReply
+                    )
+                    else -> throw MessageException()
+                }
+            }
+
             else -> {
                 throw MessageException()
             }

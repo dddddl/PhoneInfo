@@ -5,7 +5,7 @@ import java.security.MessageDigest
 
 object MsgUtil {
     val packageHeaderSize = 12
-    private var messagePrefixBytes : ByteArray
+    private var messagePrefixBytes: ByteArray
 
     init {
         val devSerial = android.os.Build.SERIAL
@@ -75,11 +75,11 @@ object MsgUtil {
         val checkSum = packet.sum().toByte()
         packet[7] = checkSum
         packet.forEachIndexed { index, byte ->
-//            Log.d("Packet", "packet[$index]:$byte")
+            //            Log.d("Packet", "packet[$index]:$byte")
         }
     }
 
-    open fun bytesToInt(bytes:ByteArray) : Int {
+    fun bytesToInt(bytes: ByteArray): Int {
         var intVal = 0
         intVal += bytes[0].toInt().and(0xff).shl(24)
         intVal += bytes[1].toInt().and(0xff).shl(16)
@@ -88,7 +88,7 @@ object MsgUtil {
         return intVal
     }
 
-    open fun intToBytes(value: Int) : ByteArray{
+    fun intToBytes(value: Int): ByteArray {
         val bytes = ByteArray(4)
         bytes[3] = value.toByte()
         bytes[2] = value.shr(8).toByte()
@@ -96,6 +96,5 @@ object MsgUtil {
         bytes[0] = value.shr(24).toByte()
         return bytes
     }
-
 
 }
