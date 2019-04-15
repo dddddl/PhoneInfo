@@ -8,7 +8,7 @@ import com.lx.qz.transform.constant.GroupConstant
 import com.lx.qz.transform.dto.PListDto
 import com.lx.qz.utils.LogHelper
 
-class PListTransform(private val context: Context) : Transform<Command, PListDto> {
+class BytesTransform(private val context: Context) : Transform<Command, PListDto> {
 
     override fun map(bytes: ByteArray, bytesRead: Int): Command {
 
@@ -127,6 +127,16 @@ class PListTransform(private val context: Context) : Transform<Command, PListDto
                     CommandConstant.GetBootInfo -> BootInfoCommand(
                         GroupConstant.BootInfo,
                         CommandConstant.GetBootInfoReply
+                    )
+                    else -> throw MessageException()
+                }
+            }
+            GroupConstant.AccountInfo -> {
+                when (opCodeValue) {
+                    CommandConstant.GetBootInfo -> AccountCommand(
+                        context,
+                        GroupConstant.AccountInfo,
+                        CommandConstant.GetAccountInfoReply
                     )
                     else -> throw MessageException()
                 }

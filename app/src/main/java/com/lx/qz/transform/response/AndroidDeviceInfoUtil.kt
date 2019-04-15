@@ -18,15 +18,6 @@ import com.lx.qz.utils.SimUtils
 object AndroidDeviceInfoUtil {
 
     fun getDeviceInfo(context: Context): NSDictionary {
-        RequestPermissionUtils.requestRuntimePermission(Manifest.permission.READ_PHONE_STATE)
-        Thread.sleep(10)
-        RequestPermissionUtils.requestRuntimePermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        Thread.sleep(10)
-        RequestPermissionUtils.requestRuntimePermission(Manifest.permission.READ_CONTACTS)
-        Thread.sleep(10)
-        RequestPermissionUtils.requestRuntimePermission(Manifest.permission.READ_SMS)
-        Thread.sleep(10)
-//        RequestPermissionUtils.requestPackagePermission(Manifest.permission.PACKAGE_USAGE_STATS)
         Log.e("qz","executor android device info")
         val root = NSDictionary()
 

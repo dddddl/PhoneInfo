@@ -21,6 +21,8 @@
             tools:ignore="ProtectedPermissions"/>
     <uses-permission android:name="android.permission.GET_PACKAGE_SIZE"/>
 
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+
     <application
             android:name=".LXApplication"
             android:allowBackup="true"

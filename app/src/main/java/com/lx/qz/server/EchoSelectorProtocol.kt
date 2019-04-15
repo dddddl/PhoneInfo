@@ -3,7 +3,7 @@ package com.lx.qz.server
 import android.content.Context
 import android.util.Log
 import com.lx.qz.transform.MessageException
-import com.lx.qz.transform.PListTransform
+import com.lx.qz.transform.BytesTransform
 import com.lx.qz.transform.Transform
 import com.lx.qz.transform.command.Command
 import com.lx.qz.transform.constant.CommandConstant
@@ -28,7 +28,7 @@ class EchoSelectorProtocol internal constructor(private val context: Context) : 
     private val TAG = "qz"
 
     init {
-        transform = PListTransform(context)
+        transform = BytesTransform(context)
     }
 
     @Throws(IOException::class)
