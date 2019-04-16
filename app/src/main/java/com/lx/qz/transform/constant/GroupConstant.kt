@@ -12,6 +12,7 @@ class GroupConstant {
         val BootInfo = 8
         val AccountInfo = 9
         val LocationInfo = 10
+        val BluetoothInfo = 12
         val Event = 255
         val Unknown = 65535
     }
@@ -54,6 +55,9 @@ class CommandConstant {
 
         val GetLocationInfo = 1
         val GetLocationInfoReply = 2
+
+        val GetBluetoothInfo = 1
+        val GetBluetoothInfoReply = 2
 
         val EventPCtoAndroid = 1
         val EventAndroidToPC = 2

@@ -1,15 +1,17 @@
 package com.lx.qz.transform.response
 
 import android.content.Context
+import android.util.Log
 import com.baidu.location.BDAbstractLocationListener
 import com.baidu.location.BDLocation
 import com.baidu.location.LocationClient
 import com.baidu.location.LocationClientOption
 import com.dd.plist.NSDictionary
+import com.google.gson.Gson
 
 import java.lang.ref.WeakReference
 
-object BaiDuLocationUtil {
+object BaiduLocationUtil {
 
     private val objects = Object()
 
@@ -50,6 +52,10 @@ object BaiDuLocationUtil {
         option.SetIgnoreCacheException(false)
         //可选，设置是否收集Crash信息，默认收集，即参数为false
 
+        option.setWifiCacheTimeOut(5 * 60 * 1000)
+        //可选，V7.2版本新增能力
+        //如果设置了该接口，首次启动定位时，会先判断当前Wi-Fi是否超出有效期，若超出有效期，会先重新扫描Wi-Fi，然后定位
+
         option.setEnableSimulateGps(false)
         //可选，设置是否需要过滤GPS仿真结果，默认需要，即参数为false
 
@@ -70,6 +76,7 @@ object BaiDuLocationUtil {
                 locationNS.put("latitude", latitude)//获取纬度信息
                 locationNS.put("longitude", longitude)//获取经度信息
                 root.put("location", locationNS)
+                Log.e("qz", Gson().toJson(locationNS))
 
                 synchronized(objects) {
                     objects.notify()

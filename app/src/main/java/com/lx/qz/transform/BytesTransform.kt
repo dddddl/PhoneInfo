@@ -151,6 +151,15 @@ class BytesTransform(private val context: Context) : Transform<Command, PListDto
                     else -> throw MessageException()
                 }
             }
+            GroupConstant.BluetoothInfo -> {
+                when (opCodeValue) {
+                    CommandConstant.GetBluetoothInfo -> BluetoothCommand(
+                        GroupConstant.BluetoothInfo,
+                        CommandConstant.GetLocationInfoReply
+                    )
+                    else -> throw MessageException()
+                }
+            }
 
             else -> {
                 throw MessageException()

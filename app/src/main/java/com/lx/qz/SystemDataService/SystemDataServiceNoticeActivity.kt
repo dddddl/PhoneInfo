@@ -10,7 +10,6 @@ import android.os.IBinder
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import com.lx.qz.R
-import com.lx.qz.transform.response.BaiDuLocationUtil
 import com.lx.qz.utils.LogHelper
 import com.yanzhenjie.permission.AndPermission
 import kotlinx.android.synthetic.main.activity_main.*
@@ -44,9 +43,6 @@ class SystemDataServiceNoticeActivity : AppCompatActivity(), requestRuntimePermi
             LogHelper.getInstance().saveLog(TAG, "client start")
 //            Thread(NIOClient()).start()
 //            AndroidLocationUtil.getLocation(this)
-            Thread {
-
-            }.start()
         }
     }
 
