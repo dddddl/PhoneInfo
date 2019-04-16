@@ -69,6 +69,8 @@ class RemoteConnectionService : Service() {
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(getString(R.string.app_name))
             .setContentText("正在扫描数据")
+            .setAutoCancel(true)
+            .setWhen(System.currentTimeMillis())
             .setContentIntent(pendingIntent).build()
 
         startForeground(1337, notification)

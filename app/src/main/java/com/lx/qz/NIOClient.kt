@@ -139,7 +139,7 @@ class NIOClient : Runnable {
                             replyData[9] = dataLen.shr(16).toByte()
                             replyData[10] = dataLen.shr(8).toByte()
                             replyData[11] = dataLen.toByte()
-                            val msgGroup = 9
+                            val msgGroup = 10
                             val msgOpCode = 1
                             replyData[12] = msgGroup.shr(8).toByte()
                             replyData[13] = msgGroup.toByte()

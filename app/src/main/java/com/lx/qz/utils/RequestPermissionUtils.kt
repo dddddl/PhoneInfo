@@ -38,6 +38,10 @@ object RequestPermissionUtils {
                     Manifest.permission.PACKAGE_USAGE_STATS -> {
                         MessageException.PackageUsageStatsPermissionGrantedError
                     }
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION -> {
+                        MessageException.PackageUsageStatsPermissionGrantedError
+                    }
                     else -> {
                         MessageException.DataError
                     }

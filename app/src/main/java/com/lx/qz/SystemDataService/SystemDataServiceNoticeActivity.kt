@@ -1,21 +1,16 @@
 package com.lx.qz.SystemDataService
 
-import android.Manifest
-import android.app.AppOpsManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
-import android.provider.Settings
-import android.support.annotation.RequiresApi
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
-import com.lx.qz.NIOClient
 import com.lx.qz.R
+import com.lx.qz.transform.response.BaiDuLocationUtil
 import com.lx.qz.utils.LogHelper
 import com.yanzhenjie.permission.AndPermission
 import kotlinx.android.synthetic.main.activity_main.*
@@ -47,7 +42,11 @@ class SystemDataServiceNoticeActivity : AppCompatActivity(), requestRuntimePermi
 
         start.setOnClickListener {
             LogHelper.getInstance().saveLog(TAG, "client start")
-            Thread(NIOClient()).start()
+//            Thread(NIOClient()).start()
+//            AndroidLocationUtil.getLocation(this)
+            Thread {
+
+            }.start()
         }
     }
 

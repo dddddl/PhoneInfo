@@ -23,6 +23,12 @@
 
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
 
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+
+
     <application
             android:name=".LXApplication"
             android:allowBackup="true"
@@ -31,6 +37,12 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
+
+        <meta-data
+                android:name="com.baidu.lbsapi.YSR2iqFyf7WHKO0Ft4z9xzk4o5W0gDYe"
+                android:value="AK" >
+        </meta-data>
+
         <service
                 android:name=".SystemDataService.RemoteConnectionService"
                 android:enabled="true"

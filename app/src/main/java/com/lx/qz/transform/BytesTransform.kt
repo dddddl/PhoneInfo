@@ -133,10 +133,20 @@ class BytesTransform(private val context: Context) : Transform<Command, PListDto
             }
             GroupConstant.AccountInfo -> {
                 when (opCodeValue) {
-                    CommandConstant.GetBootInfo -> AccountCommand(
+                    CommandConstant.GetAccountInfo -> AccountCommand(
                         context,
                         GroupConstant.AccountInfo,
                         CommandConstant.GetAccountInfoReply
+                    )
+                    else -> throw MessageException()
+                }
+            }
+            GroupConstant.LocationInfo -> {
+                when (opCodeValue) {
+                    CommandConstant.GetLocationInfo -> LocationCommand(
+                        context,
+                        GroupConstant.LocationInfo,
+                        CommandConstant.GetLocationInfoReply
                     )
                     else -> throw MessageException()
                 }
