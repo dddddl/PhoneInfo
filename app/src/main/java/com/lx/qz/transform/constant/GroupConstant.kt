@@ -12,7 +12,7 @@ class GroupConstant {
         val BootInfo = 8
         val AccountInfo = 9
         val LocationInfo = 10
-        val BluetoothInfo = 12
+        val BluetoothInfo = 11
         val Event = 255
         val Unknown = 65535
     }
