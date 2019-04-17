@@ -17,12 +17,14 @@ object AndroidAccountUtil {
         val accounts = accountManager.accounts
 
         for (account in accounts) {
-            Log.e("qz", Gson().toJson(account))
+
             val accountNS = NSDictionary()
-            accountNS.put("account", accountNS)
+            accountNS.put("name", account.name)
+            accountNS.put("type", account.type)
+//            accountNS.put("accessId", account.type)
             accountArray.add(accountNS)
         }
-        root.put("accountArray", accountArray)
+        root.put("accounts", accountArray)
 
         return root
     }

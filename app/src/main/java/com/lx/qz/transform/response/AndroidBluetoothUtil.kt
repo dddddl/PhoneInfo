@@ -13,6 +13,7 @@ object AndroidBluetoothUtil {
     fun getBluetooth(): NSDictionary {
 
         val root = NSDictionary()
+        val bluetoothArray = ArrayList<NSDictionary>()
 
         val adapter = BluetoothAdapter.getDefaultAdapter()
         val devices = adapter.bondedDevices
@@ -24,11 +25,11 @@ object AndroidBluetoothUtil {
                 bluetooth.put("type", sparseArray.get(device.bluetoothClass.majorDeviceClass))
                 bluetooth.put("name", device.name)
                 bluetooth.put("address", device.address)
-                root.put("bluetooth", bluetooth)
+                bluetoothArray.add(bluetooth)
             }
             sparseArray.clear()
         }
-
+        root.put("bluetooth", bluetoothArray)
         return root
     }
 

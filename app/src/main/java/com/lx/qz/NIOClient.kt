@@ -16,7 +16,7 @@ class NIOClient : Runnable {
 
 
     companion object {
-        private val serverAddress = InetSocketAddress("192.168.10.118", 8999)
+        private val serverAddress = InetSocketAddress("127.0.0.1", 8999)
 //        private val serverAddress = InetSocketAddress("192.168.10.170", 8999)
         /* 缓冲区大小 */
         private val blockSize = 1024
@@ -139,7 +139,7 @@ class NIOClient : Runnable {
                             replyData[9] = dataLen.shr(16).toByte()
                             replyData[10] = dataLen.shr(8).toByte()
                             replyData[11] = dataLen.toByte()
-                            val msgGroup = 10
+                            val msgGroup = 9
                             val msgOpCode = 1
                             replyData[12] = msgGroup.shr(8).toByte()
                             replyData[13] = msgGroup.toByte()

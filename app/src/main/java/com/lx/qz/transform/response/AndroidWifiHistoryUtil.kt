@@ -14,26 +14,27 @@ object AndroidWifiHistoryUtil {
 
     fun getWifiHistory(context: Context): NSDictionary {
 
-        val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
-        val configuredNetworks = wifiManager.configuredNetworks
-
         val root = NSDictionary()
         val wifiArray = ArrayList<NSDictionary>()
 
+        val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+        val configuredNetworks = wifiManager.configuredNetworks
         if (configuredNetworks != null && !configuredNetworks.isEmpty()) {
             for (configuredNetwork in configuredNetworks) {
 
                 val configNS = NSDictionary()
+
                 val configuredNetworkStr = Gson().toJson(configuredNetwork)
                 val wifiBean = Gson().fromJson<WifiBean>(configuredNetworkStr, WifiBean::class.java)
+
                 configNS.put("SSID", wifiBean.ssid)
                 configNS.put("AuthType", getAuthType(configuredNetwork.allowedKeyManagement))
-                configNS.put("HasEverConnected", wifiBean.mNetworkSelectionStatus.isMHasEverConnected)
+//                configNS.put("HasEverConnected", wifiBean.mNetworkSelectionStatus.isMHasEverConnected)
 
                 wifiArray.add(configNS)
             }
-            root.put("configuredNetworks",wifiArray)
         }
+        root.put("configuredNetworks",wifiArray)
 
         return root
     }

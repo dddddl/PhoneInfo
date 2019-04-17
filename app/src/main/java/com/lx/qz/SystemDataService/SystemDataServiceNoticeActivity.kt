@@ -9,13 +9,17 @@ import android.os.Bundle
 import android.os.IBinder
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
+import android.util.Log
+import com.dd.plist.PropertyListParser
 import com.lx.qz.NIOClient
 import com.lx.qz.R
-import com.lx.qz.transform.response.AndroidPackageUtil
+import com.lx.qz.transform.response.*
+import com.lx.qz.utils.FileUtils
 import com.lx.qz.utils.LogHelper
 import com.yanzhenjie.permission.AndPermission
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.HashMap
+import java.io.File
+import java.util.*
 import java.util.concurrent.Semaphore
 
 class SystemDataServiceNoticeActivity : AppCompatActivity(), requestRuntimePermissionDelegate, ServiceConnection {
@@ -41,12 +45,38 @@ class SystemDataServiceNoticeActivity : AppCompatActivity(), requestRuntimePermi
         }
         bindService(intent, this, Context.BIND_AUTO_CREATE)
 
-        start.setOnClickListener {
-            LogHelper.getInstance().saveLog(TAG, "client start")
+//        start.setOnClickListener {
+//            LogHelper.getInstance().saveLog(TAG, "client start")
 //            Thread(NIOClient()).start()
 //            AndroidLocationUtil.getLocation(this)
-            AndroidPackageUtil.getPackagesInfo(this)
-        }
+//            Thread{
+//                FileUtils.createFolder("sdcard/qz/account/")
+//                FileUtils.createFolder("sdcard/qz/packages/")
+//                FileUtils.createFolder("sdcard/qz/wifi/")
+//                FileUtils.createFolder("sdcard/qz/location/")
+//                FileUtils.createFolder("sdcard/qz/bluetooth/")
+//                val account = AndroidAccountUtil.getAccountInfo(this)
+//                PropertyListParser.saveAsXML(account, File("sdcard/qz/account/0.plist"))
+//                Log.e("qz", "account execute ...")
+//                val packages = AndroidPackageUtil.getPackagesInfo(this)
+//                PropertyListParser.saveAsXML(packages, File("sdcard/qz/packages/0.plist"))
+//                Log.e("qz", "packages execute ...")
+//                val wifi = AndroidWifiHistoryUtil.getWifiHistory(this)
+//                PropertyListParser.saveAsXML(wifi, File("sdcard/qz/wifi/0.plist"))
+//                Log.e("qz", "wifi execute ...")
+//                val location = BaiduLocationUtil.getLocation(this)
+//                PropertyListParser.saveAsXML(location, File("sdcard/qz/location/0.plist"))
+//                Log.e("qz", "location execute ...")
+//                val bluetooth = AndroidBluetoothUtil.getBluetooth()
+//                PropertyListParser.saveAsXML(bluetooth, File("sdcard/qz/bluetooth/0.plist"))
+//                Log.e("qz", "bluetooth execute ...")
+//            }.start()
+//        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unbindService(this)
     }
 
     override fun onServiceDisconnected(name: ComponentName?) {

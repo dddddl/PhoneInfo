@@ -30,6 +30,7 @@ object AndroidPackageUtil {
         Thread.sleep(10)
 
         val root = NSDictionary()
+        val packageArray = ArrayList<NSDictionary>()
 
         val packageManager = context.applicationContext.packageManager
         val packageInfos = packageManager.getInstalledPackages(0)
@@ -67,8 +68,10 @@ object AndroidPackageUtil {
                 packageManager.getPackageInfo(packageInfo.packageName, PackageManager.GET_PERMISSIONS)
                     .requestedPermissions
             packageNS.put("requestedPermissions", requestedPermissions)
-            root.put("package", packageNS)
+            packageArray.add(packageNS)
+
         }
+        root.put("packages", packageArray)
 
         return root
     }
