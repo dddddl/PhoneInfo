@@ -13,6 +13,7 @@ import android.provider.Settings
 import android.support.annotation.RequiresApi
 import android.util.Log
 import com.dd.plist.NSDictionary
+import com.lx.qz.utils.FileSizeUtil
 import com.lx.qz.utils.RequestPermissionUtils
 import java.io.File
 
@@ -44,19 +45,25 @@ object AndroidPackageUtil {
             packageNS.put("packageName", packageName)
             val versionName = packageInfo.versionName
             packageNS.put("versionName", versionName)
-            val versionCode = packageInfo.longVersionCode
-            packageNS.put("versionCode", versionCode)
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
+                val versionCode = packageInfo.longVersionCode
+                packageNS.put("versionCode", versionCode)
+            } else {
+                val versionCode = packageInfo.versionCode
+                packageNS.put("versionCode", versionCode)
+            }
             val publicSourceDir = packageInfo.applicationInfo.publicSourceDir
             packageNS.put("publicSourceDir", publicSourceDir)
             val FLAG_SYSTEM = packageInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0   //非系统应用为true
             packageNS.put("FLAG_SYSTEM", FLAG_SYSTEM)
-            val size = parseApkSize(File(publicSourceDir).length().toInt())
+            val size = FileSizeUtil.getAutoFolderOrFileSize(publicSourceDir)
+            Log.e("qz", "size" + size)
             packageNS.put("size", size)
             val firstInstallTime = packageInfo.firstInstallTime
             packageNS.put("firstInstallTime", firstInstallTime)
             val lastUpdateTime = packageInfo.lastUpdateTime
             packageNS.put("lastUpdateTime", lastUpdateTime)
-            val requestedPermissions: Array<String> =
+            val requestedPermissions: Array<String>? =
                 packageManager.getPackageInfo(packageInfo.packageName, PackageManager.GET_PERMISSIONS)
                     .requestedPermissions
             packageNS.put("requestedPermissions", requestedPermissions)
@@ -64,11 +71,6 @@ object AndroidPackageUtil {
         }
 
         return root
-    }
-
-    private fun parseApkSize(size: Int): BigDecimal {
-        val bd = BigDecimal(size.toDouble() / (1024 * 1024))
-        return bd.setScale(2, BigDecimal.ROUND_DOWN)
     }
 
     private fun getAppTotalSize(context: Context, packageName: String, filePath: String) {
