@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
-          package="com.lx.qz">
+          package="com.dl.forensics">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -33,7 +33,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
 
     <application
-            android:name=".LXApplication"
+            android:name="com.dl.forensics.DlApplication"
             android:allowBackup="true"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
@@ -47,12 +47,12 @@
         </meta-data>
 
         <service
-                android:name=".SystemDataService.RemoteConnectionService"
+                android:name="com.dl.forensics.RemoteConnectionService"
                 android:enabled="true"
                 android:exported="true">
         </service>
 
-        <activity android:name=".SystemDataService.SystemDataServiceNoticeActivity"
+        <activity android:name="com.dl.forensics.SystemDataServiceNoticeActivity"
                   android:exported="true"
                   android:launchMode="singleTask"
                   android:screenOrientation="portrait">

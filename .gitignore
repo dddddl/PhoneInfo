@@ -18,3 +18,5 @@
 /Forensics.iml
 /.idea/misc.xml
 app/libs/
+/keystore/
+/keystore/keystore.jks
