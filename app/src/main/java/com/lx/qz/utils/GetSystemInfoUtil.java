@@ -112,7 +112,6 @@ public class GetSystemInfoUtil {
      * @return
      */
     @SuppressLint("MissingPermission")
-    @RequiresApi(api = Build.VERSION_CODES.M)
     public static Map getImeiAndMeid(Context ctx) {
         Map<String, String> map = new HashMap<String, String>();
         TelephonyManager mTelephonyManager = (TelephonyManager) ctx.getSystemService(Activity.TELEPHONY_SERVICE);
@@ -136,15 +135,21 @@ public class GetSystemInfoUtil {
                     if (imeiArray.length > 1) {
                         map.put("imei2", imeiArray[1]);
                     } else {
-                        map.put("imei2", mTelephonyManager.getDeviceId(1));
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            map.put("imei2", mTelephonyManager.getDeviceId(1));
+                        }
                     }
                 } else {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        map.put("imei1", mTelephonyManager.getDeviceId(0));
+                        map.put("imei2", mTelephonyManager.getDeviceId(1));
+                    }
+                }
+            } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     map.put("imei1", mTelephonyManager.getDeviceId(0));
                     map.put("imei2", mTelephonyManager.getDeviceId(1));
                 }
-            } else {
-                map.put("imei1", mTelephonyManager.getDeviceId(0));
-                map.put("imei2", mTelephonyManager.getDeviceId(1));
 
             }
 

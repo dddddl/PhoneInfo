@@ -37,38 +37,49 @@ public class DeviceInfoUtil {
 
     //IMEI
     @SuppressLint("MissingPermission")
-    public static String getIMEI(Context context){
+    public static String getIMEI(Context context) {
         TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(context.TELEPHONY_SERVICE);
-        if(telephonyManager == null){
+        if (telephonyManager == null) {
             return "未知";
         }
         String imei = "未知";
-        try{
-            imei = telephonyManager.getDeviceId();
-        }catch (Exception e){
+        try {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                imei = telephonyManager.getImei();
+            } else {
+                imei = telephonyManager.getDeviceId();
+            }
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return imei;
     }
 
     //MEID
-    public static String getMEID(Context context){
+    @SuppressLint("MissingPermission")
+    public static String getMEID(Context context) {
+        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(context.TELEPHONY_SERVICE);
+        if (telephonyManager == null) {
+            return "未知";
+        }
         String meid = "未知";
         if (Build.VERSION.SDK_INT < 21) {
-            //如果获取系统的IMEI/MEID，14位代表meid 15位是imei
             if (GetSystemInfoUtil.getNumber(context) == 14) {
                 meid = GetSystemInfoUtil.getImeiOrMeid(context);
             }
-            // 21版本是5.0，判断是否是5.0以上的系统  5.0系统直接获取IMEI1,IMEI2,MEID
-        } else if (Build.VERSION.SDK_INT >= 21) {
-            Map<String, String> map = null;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                map = GetSystemInfoUtil.getImeiAndMeid(context);
-                meid = map.get("imei1");
-            }
+        } else if (Build.VERSION.SDK_INT >= 21 && Build.VERSION.SDK_INT < 26) {
+            Map<String, String> map = GetSystemInfoUtil.getImeiAndMeid(context);
+            if (!"".equals(map.get("meid")))
+                meid = map.get("meid");
+        } else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            meid = telephonyManager.getMeid();
         }
+
         return meid;
     }
+
 
     @SuppressLint("MissingPermission")
     public static String getIMSI(Context context) {
@@ -77,10 +88,10 @@ public class DeviceInfoUtil {
             TelephonyManager tm = (TelephonyManager) context.
                     getSystemService(Context.TELEPHONY_SERVICE);
             imsi = tm.getSubscriberId();
-            if (imsi==null || "".equals(imsi)) imsi = tm.getSimOperator();
-            Class<?>[] resources = new Class<?>[] {int.class};
+            if (imsi == null || "".equals(imsi)) imsi = tm.getSimOperator();
+            Class<?>[] resources = new Class<?>[]{int.class};
             Integer resourcesId = new Integer(1);
-            if (imsi==null || "".equals(imsi)) {
+            if (imsi == null || "".equals(imsi)) {
                 try {   //利用反射获取    MTK手机
                     Method addMethod = tm.getClass().getDeclaredMethod("getSubscriberIdGemini", resources);
                     addMethod.setAccessible(true);
@@ -89,7 +100,7 @@ public class DeviceInfoUtil {
                     imsi = null;
                 }
             }
-            if (imsi==null || "".equals(imsi)) {
+            if (imsi == null || "".equals(imsi)) {
                 try {   //利用反射获取    展讯手机
                     Class<?> c = Class
                             .forName("com.android.internal.telephony.PhoneFactory");
@@ -101,7 +112,7 @@ public class DeviceInfoUtil {
                     imsi = null;
                 }
             }
-            if (imsi==null || "".equals(imsi)) {
+            if (imsi == null || "".equals(imsi)) {
                 try {   //利用反射获取    高通手机
                     Method addMethod2 = tm.getClass().getDeclaredMethod("getSimSerialNumber", resources);
                     addMethod2.setAccessible(true);
@@ -110,7 +121,7 @@ public class DeviceInfoUtil {
                     imsi = null;
                 }
             }
-            if (imsi==null || "".equals(imsi)) {
+            if (imsi == null || "".equals(imsi)) {
                 imsi = "未知";
             }
             return imsi;
@@ -121,22 +132,23 @@ public class DeviceInfoUtil {
 
     /**
      * 返回手机运营商名称
+     *
      * @return
      */
     @SuppressLint("MissingPermission")
-    public static String getProvidersName(Context context){
+    public static String getProvidersName(Context context) {
         String ProvidersName = null;
         TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         String IMSI = telephonyManager.getSubscriberId();
-        if( IMSI == null){
+        if (IMSI == null) {
             return "未知";
         }
 
-        if(IMSI.startsWith("46000") || IMSI.startsWith("46002") || IMSI.startsWith("46007")){
+        if (IMSI.startsWith("46000") || IMSI.startsWith("46002") || IMSI.startsWith("46007")) {
             ProvidersName = "中国移动";
-        }else if(IMSI.startsWith("46001")|| IMSI.startsWith("46006")){
+        } else if (IMSI.startsWith("46001") || IMSI.startsWith("46006")) {
             ProvidersName = "中国联通";
-        }else if (IMSI.startsWith("46003")|| IMSI.startsWith("46005")|| IMSI.startsWith("46011")) {
+        } else if (IMSI.startsWith("46003") || IMSI.startsWith("46005") || IMSI.startsWith("46011")) {
             ProvidersName = "中国电信";
         }
 
@@ -149,14 +161,14 @@ public class DeviceInfoUtil {
      * return String
      */
 
-    public static String getBasebandVersion(){
+    public static String getBasebandVersion() {
         String Version = "";
         try {
             Class cl = Class.forName("android.os.SystemProperties");
             Object invoker = cl.newInstance();
-            Method m = cl.getMethod("get", new Class[] { String.class,String.class });
+            Method m = cl.getMethod("get", new Class[]{String.class, String.class});
             Object result = m.invoke(invoker, new Object[]{"gsm.version.baseband", "no message"});
-            Version = (String)result;
+            Version = (String) result;
         } catch (Exception e) {
         }
         return Version;
@@ -174,9 +186,9 @@ public class DeviceInfoUtil {
                 return "未知";
             }
             Method method = bluetoothManagerService.getClass().getMethod("getAddress");
-            if(method != null) {
+            if (method != null) {
                 Object obj = method.invoke(bluetoothManagerService);
-                if(obj != null) {
+                if (obj != null) {
                     return obj.toString();
                 }
             }
@@ -193,11 +205,11 @@ public class DeviceInfoUtil {
     }
 
     public static String getMacAddressFromIp(Context context) {
-        String mac_s= "";
+        String mac_s = "";
         StringBuilder buf = new StringBuilder();
         try {
             byte[] mac;
-            NetworkInterface ne= NetworkInterface.getByInetAddress(InetAddress.getByName(getIpAddress(context)));
+            NetworkInterface ne = NetworkInterface.getByInetAddress(InetAddress.getByName(getIpAddress(context)));
             mac = ne.getHardwareAddress();
             for (byte b : mac) {
                 buf.append(String.format("%02X:", b));
@@ -213,7 +225,7 @@ public class DeviceInfoUtil {
         return mac_s;
     }
 
-    public static String getIpAddress(Context context){
+    public static String getIpAddress(Context context) {
         NetworkInfo info = ((ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
         if (info != null && info.isConnected()) {
@@ -239,7 +251,7 @@ public class DeviceInfoUtil {
                 WifiInfo wifiInfo = wifiManager.getConnectionInfo();
                 String ipAddress = intIP2StringIP(wifiInfo.getIpAddress());
                 return ipAddress;
-            }  else if (info.getType() == ConnectivityManager.TYPE_ETHERNET){
+            } else if (info.getType() == ConnectivityManager.TYPE_ETHERNET) {
                 // 有限网络
                 return getLocalIp();
             }
@@ -287,11 +299,11 @@ public class DeviceInfoUtil {
         return TimeZone.getDefault().getID();
     }
 
-    public static String getCPUABI(){
+    public static String getCPUABI() {
         return Build.CPU_ABI + "/" + Build.CPU_ABI2;
     }
 
-    public static String getBoard(){
+    public static String getBoard() {
         return Build.BOARD;
     }
 
@@ -315,7 +327,7 @@ public class DeviceInfoUtil {
                 boolean removable = (Boolean) isRemovable.invoke(storageVolumeElement);
                 String state = (String) getState.invoke(storageVolumeElement);
                 if (is_removale == removable) {
-                    return "unmounted".equals(state)? "" : path;
+                    return "unmounted".equals(state) ? "" : path;
                 }
             }
         } catch (ClassNotFoundException e) {
@@ -330,11 +342,11 @@ public class DeviceInfoUtil {
         return "";
     }
 
-    public static String getHardWare(){
+    public static String getHardWare() {
         return Build.HARDWARE;
     }
 
-    public static String getAndroidId(Context context){
+    public static String getAndroidId(Context context) {
         return Settings.System.getString(context.getContentResolver(), Settings.System.ANDROID_ID);
     }
 
@@ -346,27 +358,27 @@ public class DeviceInfoUtil {
     public static boolean isSDCardEnable(Context context) {
 //        return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
         String path = getStoragePath(context, true);
-        return "".equals(path)? false : true;
+        return "".equals(path) ? false : true;
     }
 
     //获取用户空间总大小
     //TODO
-    public static String getTotalUserSpace(Context context){
-        if(isSDCardEnable(context)){
+    public static String getTotalUserSpace(Context context) {
+        if (isSDCardEnable(context)) {
             long totalSize = getTotalExternalMemorySize(context) + getInternalToatalSpaceOfLong(context);
-            return Formatter.formatFileSize(context,totalSize);
-        }else{
+            return Formatter.formatFileSize(context, totalSize);
+        } else {
             return getInternalToatalSpace(context);
         }
     }
 
     //获取用户空间可用大小
     //TODO
-    public static String getTotalAvailableUserSpace(Context context){
-        if(isSDCardEnable(context)){
+    public static String getTotalAvailableUserSpace(Context context) {
+        if (isSDCardEnable(context)) {
             long totalSize = getFreeSpace(context) + getAvailableInternalMemorySizeOfLong(context);
-            return Formatter.formatFileSize(context,totalSize);
-        }else{
+            return Formatter.formatFileSize(context, totalSize);
+        } else {
             return getAvailableInternalMemorySize(context);
         }
     }
@@ -408,32 +420,34 @@ public class DeviceInfoUtil {
 
     /**
      * 获取内置存储空间的总容量
+     *
      * @param context
      * @return
      */
-    public static String getInternalToatalSpace(Context context){
+    public static String getInternalToatalSpace(Context context) {
         String path = Environment.getDataDirectory().getPath();
         StatFs statFs = new StatFs(path);
         long blockSize = statFs.getBlockSize();
         long totalBlocks = statFs.getBlockCount();
         long availableBlocks = statFs.getAvailableBlocks();
-        long useBlocks  = totalBlocks - availableBlocks;
-        long rom_length = totalBlocks*blockSize;
-        return Formatter.formatFileSize(context,rom_length);
+        long useBlocks = totalBlocks - availableBlocks;
+        long rom_length = totalBlocks * blockSize;
+        return Formatter.formatFileSize(context, rom_length);
     }
 
-    public static long getInternalToatalSpaceOfLong(Context context){
+    public static long getInternalToatalSpaceOfLong(Context context) {
         String path = Environment.getDataDirectory().getPath();
         StatFs statFs = new StatFs(path);
         long blockSize = statFs.getBlockSize();
         long totalBlocks = statFs.getBlockCount();
         long availableBlocks = statFs.getAvailableBlocks();
-        long useBlocks  = totalBlocks - availableBlocks;
-        long rom_length = totalBlocks*blockSize;
+        long useBlocks = totalBlocks - availableBlocks;
+        long rom_length = totalBlocks * blockSize;
         return rom_length;
     }
 
     //获取内置存储空间可用大小
+
     /**
      * 获取手机内部可用空间大小
      *
@@ -458,7 +472,7 @@ public class DeviceInfoUtil {
     }
 
     //序列号
-    public static String getSerialNumber(){
+    public static String getSerialNumber() {
         return Build.SERIAL;
     }
 
@@ -475,10 +489,11 @@ public class DeviceInfoUtil {
 
     /**
      * ICCID:ICC identity集成电路卡标识，这个是唯一标识一张卡片物理号码的
+     *
      * @return
      */
     @SuppressLint("MissingPermission")
-    public static String getIccid(Context context){
+    public static String getIccid(Context context) {
         if (isSimReady(context)) {
             TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             return tm.getSimSerialNumber();
@@ -505,12 +520,12 @@ public class DeviceInfoUtil {
     }
 
     //获取手机品牌
-    public static String getBrand(){
+    public static String getBrand() {
         return Build.BRAND;
     }
 
     //获取手机型号
-    public static String getModel(){
+    public static String getModel() {
         return Build.MODEL;
     }
 

@@ -4,23 +4,23 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
+import android.support.v4.app.AppOpsManagerCompat
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.util.Log
-import com.dd.plist.PropertyListParser
 import com.lx.qz.NIOClient
 import com.lx.qz.R
-import com.lx.qz.transform.response.*
-import com.lx.qz.utils.FileUtils
 import com.lx.qz.utils.LogHelper
 import com.yanzhenjie.permission.AndPermission
 import kotlinx.android.synthetic.main.activity_main.*
-import java.io.File
 import java.util.*
 import java.util.concurrent.Semaphore
+
 
 class SystemDataServiceNoticeActivity : AppCompatActivity(), requestRuntimePermissionDelegate, ServiceConnection {
 
@@ -31,6 +31,7 @@ class SystemDataServiceNoticeActivity : AppCompatActivity(), requestRuntimePermi
         val TAG = "SystemDataServiceNoticeActivity"
     }
 
+    private lateinit var alwaysDenied: String
     val permissionMaptable: HashMap<String, Int> = HashMap()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,11 +91,40 @@ class SystemDataServiceNoticeActivity : AppCompatActivity(), requestRuntimePermi
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            REQ_CODE_PERMISSION -> {
+                if (AndPermission.hasPermissions(this, alwaysDenied)) {
+                    Log.e("qz", "always hasPermissions")
+                    permissionMaptable[alwaysDenied] =
+                        permissionStatusOK
+                    mutex.release()
+                } else {
 
+                    val check = ContextCompat.checkSelfPermission(this, alwaysDenied)
+                    if (check == PackageManager.PERMISSION_GRANTED) {
+                        Log.e("qz", "always PERMISSION_GRANTED")
+                        permissionMaptable[alwaysDenied] =
+                            permissionStatusOK
+                        mutex.release()
+                    } else {
+                        Log.e("qz", "always denied")
+                        permissionMaptable[alwaysDenied] =
+                            permissionStatusForbidden
+                        mutex.release()
+                    }
+                }
+            }
+        }
+    }
+
+    private val REQ_CODE_PERMISSION = 1
+    val mutex = Semaphore(0)
     override fun requestRuntimePermission(permission: String): Int {
-        val mutex = Semaphore(0)
         runOnUiThread {
-            if (AndPermission.hasPermissions(this, permission)) {
+            if (AndPermission.hasPermissions(this, permission) ||
+                ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
+            ) {
                 permissionMaptable[permission] = permissionStatusOK
                 mutex.release()
             } else {
@@ -114,9 +144,26 @@ class SystemDataServiceNoticeActivity : AppCompatActivity(), requestRuntimePermi
                         if (TextUtils.equals(permission, "android.permission.PACKAGE_USAGE_STATS")) {
 
                         } else {
-                            permissionMaptable[permission] =
-                                permissionStatusForbidden
-                            mutex.release()
+
+                            if (ContextCompat.checkSelfPermission(
+                                    this,
+                                    permission
+                                ) == PackageManager.PERMISSION_GRANTED
+                            ) {
+                                permissionMaptable[permission] =
+                                    permissionStatusOK
+                                mutex.release()
+                            } else if (AndPermission.hasAlwaysDeniedPermission(this, it)) {
+                                alwaysDenied = permission
+                                AndPermission.with(this)
+                                    .runtime()
+                                    .setting()
+                                    .start(REQ_CODE_PERMISSION)
+                            } else {
+                                permissionMaptable[permission] =
+                                    permissionStatusForbidden
+                                mutex.release()
+                            }
                         }
                     }
                     .start()
@@ -162,6 +209,8 @@ class SystemDataServiceNoticeActivity : AppCompatActivity(), requestRuntimePermi
 //            mode == AppOpsManager.MODE_ALLOWED
 //        }
 //    }
+
+
 }
 
 interface requestRuntimePermissionDelegate {
