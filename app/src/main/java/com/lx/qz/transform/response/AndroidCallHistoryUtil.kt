@@ -61,6 +61,12 @@ object AndroidCallHistoryUtil {
                 null,
                 null
             )
+
+            if (cursor == null){
+                LogHelper.getInstance()
+                    .saveLog(TAG,"$index 记录cursor为空")
+            }
+
             while (cursor != null && cursor.moveToNext()) {
                 val id = cursor.getLong(cursor.getColumnIndex(CallLog.Calls._ID))
                 val number = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER))
@@ -87,6 +93,8 @@ object AndroidCallHistoryUtil {
             }
         } catch (e: Exception) {
             e.printStackTrace()
+            LogHelper.getInstance()
+                .saveLog(TAG,"获取$index 条通话记录时，出现exception${e.printStackTrace()}")
         }
         //Log.d(TAG, "root:${root.toXMLPropertyList()}")
         return root

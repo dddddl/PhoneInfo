@@ -49,60 +49,60 @@ object AndroidTextMessageUtilNew {
             val threadCursor: Cursor
             val selection = "_id = ${conversationArray[index]}"
             val uri: Uri
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                uri = Threads.CONTENT_URI.buildUpon().appendQueryParameter("simple", "true").build()
-                val ALL_THREADS_PROJECTION = arrayOf(
-                    Threads._ID,
-                    Threads.DATE,
-                    Threads.MESSAGE_COUNT,
-                    Threads.RECIPIENT_IDS,
-                    Threads.SNIPPET,
-                    Threads.SNIPPET_CHARSET,
-                    Threads.READ,
-                    Threads.ERROR,
-                    Threads.HAS_ATTACHMENT
-                )
-                threadCursor = context.contentResolver.query(uri, ALL_THREADS_PROJECTION, selection, null, "date DESC")
-            } else {
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//                uri = Threads.CONTENT_URI.buildUpon().appendQueryParameter("simple", "true").build()
+//                val ALL_THREADS_PROJECTION = arrayOf(
+//                    Threads._ID,
+//                    Threads.DATE,
+//                    Threads.MESSAGE_COUNT,
+//                    Threads.RECIPIENT_IDS,
+//                    Threads.SNIPPET,
+//                    Threads.SNIPPET_CHARSET,
+//                    Threads.READ,
+//                    Threads.ERROR,
+//                    Threads.HAS_ATTACHMENT
+//                )
+//                threadCursor = context.contentResolver.query(uri, ALL_THREADS_PROJECTION, selection, null, "date DESC")
+//            } else {
                 uri = Uri.parse("content://mms-sms/conversations/")
                 val projection = arrayOf("_id", "thread_id", "address", "person", "date", "body", "type")
                 threadCursor = context.contentResolver.query(uri, projection, selection, null, null)
-            }
+//            }
 
             if (threadCursor != null && threadCursor.moveToNext()) {
                 val threadID: Long
                 var address: ArrayList<String> = ArrayList()
                 var date: String
                 var snippet: String
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    threadID = threadCursor.getLong(threadCursor.getColumnIndex(Threads._ID))
-                    if (!threadCursor.isNull(threadCursor.getColumnIndex(Threads.SNIPPET))) {
-                        snippet = threadCursor.getString(threadCursor.getColumnIndex(Threads.SNIPPET))
-                    } else {
-                        snippet = ""
-                    }
-
-                    val recipientIDs = threadCursor.getString(threadCursor.getColumnIndex(Threads.RECIPIENT_IDS))
-                    val recipientArray = recipientIDs.split(" ")
-                    Log.d(TAG, "recipientIDs:$recipientIDs")
-                    recipientArray.forEach { recipientID ->
-                        Log.d(TAG, "recipientID:$recipientID")
-                        val selection = "_id = $recipientID"
-                        val projection = arrayOf("_id", "address")
-                        val addressCursor = context.contentResolver.query(
-                            Uri.parse("content://mms-sms/canonical-addresses"),
-                            projection,
-                            selection,
-                            null,
-                            null
-                        )
-                        if (addressCursor != null && addressCursor.moveToNext()) {
-                            val addr = addressCursor.getString(addressCursor.getColumnIndex("address"))
-                            address.add(addr)
-                        }
-                    }
-                    date = threadCursor.getString(threadCursor.getColumnIndex(Threads.DATE))
-                } else {
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//                    threadID = threadCursor.getLong(threadCursor.getColumnIndex(Threads._ID))
+//                    if (!threadCursor.isNull(threadCursor.getColumnIndex(Threads.SNIPPET))) {
+//                        snippet = threadCursor.getString(threadCursor.getColumnIndex(Threads.SNIPPET))
+//                    } else {
+//                        snippet = ""
+//                    }
+//
+//                    val recipientIDs = threadCursor.getString(threadCursor.getColumnIndex(Threads.RECIPIENT_IDS))
+//                    val recipientArray = recipientIDs.split(" ")
+//                    Log.d(TAG, "recipientIDs:$recipientIDs")
+//                    recipientArray.forEach { recipientID ->
+//                        Log.d(TAG, "recipientID:$recipientID")
+//                        val selection = "_id = $recipientID"
+//                        val projection = arrayOf("_id", "address")
+//                        val addressCursor = context.contentResolver.query(
+//                            Uri.parse("content://mms-sms/canonical-addresses"),
+//                            projection,
+//                            selection,
+//                            null,
+//                            null
+//                        )
+//                        if (addressCursor != null && addressCursor.moveToNext()) {
+//                            val addr = addressCursor.getString(addressCursor.getColumnIndex("address"))
+//                            address.add(addr)
+//                        }
+//                    }
+//                    date = threadCursor.getString(threadCursor.getColumnIndex(Threads.DATE))
+//                } else {
                     val threadColumns = arrayOf("address", "person", "date", "body", "type")
                     threadID = threadCursor.getLong(threadCursor.getColumnIndex("thread_id"))
                     val addr = threadCursor.getString(threadCursor.getColumnIndex(threadColumns[0]))
@@ -110,7 +110,7 @@ object AndroidTextMessageUtilNew {
                     address.add(addr)
                     date = threadCursor.getString(threadCursor.getColumnIndex(threadColumns[2]))
                     snippet = threadCursor.getString(threadCursor.getColumnIndex(threadColumns[3]))
-                }
+//                }
 
                 Log.d(TAG, "thread id: $threadID")
                 Log.d(TAG, "snippet: $snippet")
@@ -318,66 +318,66 @@ object AndroidTextMessageUtilNew {
         var threadCursor: Cursor? = null
         val uri: Uri
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                uri = Threads.CONTENT_URI.buildUpon().appendQueryParameter("simple", "true").build()
-                val ALL_THREADS_PROJECTION = arrayOf(
-                    Threads._ID,
-                    Threads.DATE,
-                    Threads.MESSAGE_COUNT,
-                    Threads.RECIPIENT_IDS,
-                    Threads.SNIPPET,
-                    Threads.SNIPPET_CHARSET,
-                    Threads.READ,
-                    Threads.ERROR,
-                    Threads.HAS_ATTACHMENT
-                )
-                threadCursor = context.contentResolver.query(uri, ALL_THREADS_PROJECTION, null, null, "date DESC")
-            } else {
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//                uri = Threads.CONTENT_URI.buildUpon().appendQueryParameter("simple", "true").build()
+//                val ALL_THREADS_PROJECTION = arrayOf(
+//                    Threads._ID,
+//                    Threads.DATE,
+//                    Threads.MESSAGE_COUNT,
+//                    Threads.RECIPIENT_IDS,
+//                    Threads.SNIPPET,
+//                    Threads.SNIPPET_CHARSET,
+//                    Threads.READ,
+//                    Threads.ERROR,
+//                    Threads.HAS_ATTACHMENT
+//                )
+//                threadCursor = context.contentResolver.query(uri, ALL_THREADS_PROJECTION, null, null, "date DESC")
+//            } else {
                 uri = Uri.parse("content://mms-sms/conversations/")
                 val projection = arrayOf("_id", "thread_id", "address", "person", "date", "body", "type")
                 threadCursor = context.contentResolver.query(uri, projection, null, null, null)
-            }
+//            }
 
             if (threadCursor != null && threadCursor.count > 0) {
                 while (threadCursor != null && threadCursor.moveToNext()) {
 //                    val threadID : Long
                     var address: ArrayList<String> = ArrayList()
                     var snippet: String
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//                        threadID = threadCursor.getLong(threadCursor.getColumnIndex(Threads._ID))
-                        if (!threadCursor.isNull(threadCursor.getColumnIndex(Threads.SNIPPET))) {
-                            snippet = threadCursor.getString(threadCursor.getColumnIndex(Threads.SNIPPET))
-                        } else {
-                            snippet = ""
-                        }
-
-                        val recipientIDs = threadCursor.getString(threadCursor.getColumnIndex(Threads.RECIPIENT_IDS))
-                        val recipientArray = recipientIDs.split(" ")
-                        Log.d(TAG, "recipientIDs:$recipientIDs")
-                        recipientArray.forEach { recipientID ->
-                            Log.d(TAG, "recipientID:$recipientID")
-                            val selection = "_id = $recipientID"
-                            val projection = arrayOf("_id", "address")
-                            val addressCursor = context.contentResolver.query(
-                                Uri.parse("content://mms-sms/canonical-addresses"),
-                                projection,
-                                selection,
-                                null,
-                                null
-                            )
-                            if (addressCursor != null && addressCursor.moveToNext()) {
-                                val addr = addressCursor.getString(addressCursor.getColumnIndex("address"))
-                                address.add(addr)
-                            }
-                        }
-                    } else {
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+////                        threadID = threadCursor.getLong(threadCursor.getColumnIndex(Threads._ID))
+//                        if (!threadCursor.isNull(threadCursor.getColumnIndex(Threads.SNIPPET))) {
+//                            snippet = threadCursor.getString(threadCursor.getColumnIndex(Threads.SNIPPET))
+//                        } else {
+//                            snippet = ""
+//                        }
+//
+//                        val recipientIDs = threadCursor.getString(threadCursor.getColumnIndex(Threads.RECIPIENT_IDS))
+//                        val recipientArray = recipientIDs.split(" ")
+//                        Log.d(TAG, "recipientIDs:$recipientIDs")
+//                        recipientArray.forEach { recipientID ->
+//                            Log.d(TAG, "recipientID:$recipientID")
+//                            val selection = "_id = $recipientID"
+//                            val projection = arrayOf("_id", "address")
+//                            val addressCursor = context.contentResolver.query(
+//                                Uri.parse("content://mms-sms/canonical-addresses"),
+//                                projection,
+//                                selection,
+//                                null,
+//                                null
+//                            )
+//                            if (addressCursor != null && addressCursor.moveToNext()) {
+//                                val addr = addressCursor.getString(addressCursor.getColumnIndex("address"))
+//                                address.add(addr)
+//                            }
+//                        }
+//                    } else {
                         val threadColumns = arrayOf("address", "person", "date", "body", "type")
 //                        threadID = threadCursor.getLong(threadCursor.getColumnIndex("thread_id"))
                         val addr = threadCursor.getString(threadCursor.getColumnIndex(threadColumns[0]))
                         Log.d(TAG, "addr:$addr")
                         address.add(addr)
                         snippet = threadCursor.getString(threadCursor.getColumnIndex(threadColumns[3]))
-                    }
+//                    }
 
                     val threadId = threadCursor.getLong(threadCursor.getColumnIndex(Threads._ID))
                     Log.d(TAG, "thread id: $threadId")

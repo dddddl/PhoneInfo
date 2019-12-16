@@ -11,8 +11,21 @@
             android:id="@+id/start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hello World!"
+            android:text="龙信取证"
+            android:textStyle="bold"
+            android:textSize="22sp"
             android:layout_centerInParent="true"
+    />
+
+    <TextView
+            android:id="@+id/version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:textSize="16sp"
+            android:layout_marginBottom="10dp"
     />
 
 </RelativeLayout>

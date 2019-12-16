@@ -2,6 +2,7 @@ package com.lx.qz.transform
 
 import android.content.Context
 import android.util.Log
+import com.lx.qz.transform.command.CallRecordCommand
 import com.lx.qz.transform.command.*
 import com.lx.qz.transform.constant.CommandConstant
 import com.lx.qz.transform.constant.GroupConstant
@@ -156,6 +157,26 @@ class BytesTransform(private val context: Context) : Transform<Command, PListDto
                     CommandConstant.GetBluetoothInfo -> BluetoothCommand(
                         GroupConstant.BluetoothInfo,
                         CommandConstant.GetLocationInfoReply
+                    )
+                    else -> throw MessageException()
+                }
+            }
+
+            GroupConstant.QQVoice -> {
+                when (opCodeValue) {
+                    CommandConstant.GetQQVoiceInfo -> QQVoiceCommand(
+                        GroupConstant.QQVoice,
+                        CommandConstant.GetQQVoiceInfoReply
+                    )
+                    else -> throw MessageException()
+                }
+            }
+
+            GroupConstant.CallRecord -> {
+                when (opCodeValue) {
+                    CommandConstant.GetCallRecordInfo -> CallRecordCommand(
+                        GroupConstant.CallRecord,
+                        CommandConstant.GetCallRecordInfoReply
                     )
                     else -> throw MessageException()
                 }

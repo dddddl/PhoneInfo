@@ -1,5 +1,6 @@
 package com.lx.qz.SystemDataService
 
+import android.app.Application
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -13,11 +14,16 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.util.Log
+import com.dd.plist.PropertyListParser
+import com.google.gson.Gson
 import com.lx.qz.NIOClient
 import com.lx.qz.R
+import com.lx.qz.transform.response.*
+import com.lx.qz.utils.FileUtils
 import com.lx.qz.utils.LogHelper
 import com.yanzhenjie.permission.AndPermission
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.File
 import java.util.*
 import java.util.concurrent.Semaphore
 
@@ -45,8 +51,11 @@ class SystemDataServiceNoticeActivity : AppCompatActivity(), requestRuntimePermi
             startService(intent)
         }
         bindService(intent, this, Context.BIND_AUTO_CREATE)
+        val manager = this.packageManager
+        val info = manager.getPackageInfo(this.packageName, 0)
+        version.text = "version : " + info.versionName
 
-//        start.setOnClickListener {
+        start.setOnClickListener {
 //            LogHelper.getInstance().saveLog(TAG, "client start")
 //            Thread(NIOClient()).start()
 //            AndroidLocationUtil.getLocation(this)
@@ -72,7 +81,7 @@ class SystemDataServiceNoticeActivity : AppCompatActivity(), requestRuntimePermi
 //                PropertyListParser.saveAsXML(bluetooth, File("sdcard/qz/bluetooth/0.plist"))
 //                Log.e("qz", "bluetooth execute ...")
 //            }.start()
-//        }
+        }
     }
 
     override fun onDestroy() {
