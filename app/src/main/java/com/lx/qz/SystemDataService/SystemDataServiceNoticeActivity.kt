@@ -56,8 +56,8 @@ class SystemDataServiceNoticeActivity : AppCompatActivity(), requestRuntimePermi
         version.text = "version : " + info.versionName
 
         start.setOnClickListener {
-//            LogHelper.getInstance().saveLog(TAG, "client start")
-//            Thread(NIOClient()).start()
+            LogHelper.getInstance().saveLog(TAG, "client start")
+            Thread(NIOClient()).start()
 //            AndroidLocationUtil.getLocation(this)
 //            Thread{
 //                FileUtils.createFolder("sdcard/qz/account/")
