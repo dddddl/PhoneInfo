@@ -3,6 +3,7 @@ package com.lx.qz.transform.command
 import android.content.Context
 import android.util.Log
 import com.lx.qz.transform.response.AndroidCallHistoryUtil
+import com.lx.qz.utils.LogHelper
 import com.lx.qz.utils.MsgUtil
 
 class CallHistoryCountCommand(
@@ -15,7 +16,7 @@ class CallHistoryCountCommand(
     override fun executor(): ByteArray {
         Log.e("qz", "CallHistoryCountCommand execute...")
         val count = AndroidCallHistoryUtil.getCallHistoryCount(context)
-
+        LogHelper.getInstance().saveLog(TAG, "联系人总数为===>count")
         return MsgUtil.envelopedData(true, commandGroup, commandOperation, MsgUtil.intToBytes(count))
 
     }

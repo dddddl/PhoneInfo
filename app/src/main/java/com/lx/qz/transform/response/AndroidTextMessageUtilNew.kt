@@ -386,8 +386,7 @@ object AndroidTextMessageUtilNew {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && !RomUtil.isMiUI()) {
 //                        threadID = threadCursor.getLong(threadCursor.getColumnIndex(Threads._ID))
                         if (!threadCursor.isNull(threadCursor.getColumnIndex(Threads.SNIPPET))) {
-                            snippet =
-                                threadCursor.getString(threadCursor.getColumnIndex(Threads.SNIPPET))
+                            snippet = threadCursor.getString(threadCursor.getColumnIndex(Threads.SNIPPET))
                         } else {
                             snippet = ""
                         }
@@ -395,11 +394,11 @@ object AndroidTextMessageUtilNew {
                         val recipientIDs =
                             threadCursor.getString(threadCursor.getColumnIndex(Threads.RECIPIENT_IDS))
                         val recipientArray = recipientIDs.split(" ")
-                        Log.d(TAG, "recipientIDs:$recipientIDs")
+
                         recipientArray.forEach { recipientID ->
-                            Log.d(TAG, "recipientID:$recipientID")
                             val selection = "_id = $recipientID"
-                            val projection = arrayOf("_id", "address")
+//                            val projection = arrayOf("_id", "address")
+                            val projection = arrayOf("_id")
                             val addressCursor = context.contentResolver.query(
                                 Uri.parse("content://mms-sms/canonical-addresses"),
                                 projection,
@@ -451,6 +450,7 @@ object AndroidTextMessageUtilNew {
             getTextMessageThreadByIndex(index)
         }
         */
+
         LogHelper.getInstance().saveLog(TAG, "短信总数===>${conversationArray.size}\n")
         return conversationArray.size
     }

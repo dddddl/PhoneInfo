@@ -73,7 +73,7 @@ public class DeviceInfoUtil {
             Map<String, String> map = GetSystemInfoUtil.getImeiAndMeid(context);
             if (!"".equals(map.get("meid")))
                 meid = map.get("meid");
-        } else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        } else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
             meid = telephonyManager.getMeid();
         }
 
@@ -494,7 +494,7 @@ public class DeviceInfoUtil {
      */
     @SuppressLint("MissingPermission")
     public static String getIccid(Context context) {
-        if (isSimReady(context)) {
+        if (isSimReady(context) && Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
             TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             return tm.getSimSerialNumber();
         }

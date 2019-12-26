@@ -34,7 +34,7 @@ class BytesTransform(private val context: Context) : Transform<Command, PListDto
         val groupValue = data[0].toInt().shl(8) + data[1]
         val opCodeValue = data[2].toInt().shl(8) + data[3]
         Log.d("qz", "groupValue:$groupValue, opCodeValue:$opCodeValue")
-
+        LogHelper.getInstance().saveLog(javaClass.simpleName, "groupValue:$groupValue, opCodeValue:$opCodeValue")
         val rawData = data.copyOfRange(4, data.size)
 
         val command: Command?

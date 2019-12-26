@@ -95,6 +95,7 @@ public class CrashHandle implements Thread.UncaughtExceptionHandler {
             fos.close();
         } catch (IOException e) {
             Log.e("qz", "create file failed recreate");
+            LogHelper.getInstance().saveLog("qz", "create file failed recreate");
         }
 
     }

@@ -21,7 +21,7 @@ class EchoSelectorProtocol internal constructor(private val context: Context) : 
     /*缓冲区大小*/
     private val BLOCK = 1024
     /*接受数据缓冲区*/
-//    private val sendbuffer = ByteBuffer.allocate(1024 * 1024)
+    private val sendbuffer = ByteBuffer.allocate(1024 * 1024)
     /*发送数据缓冲区*/
     private val receivebuffer = ByteBuffer.allocate(BLOCK)
     private var transform: Transform<*, *>? = null
@@ -37,13 +37,14 @@ class EchoSelectorProtocol internal constructor(private val context: Context) : 
         channel.configureBlocking(false)
         //将选择器注册到连接到的客户端信道，并指定该信道key值的属性为OP_READ，同时为该信道指定关联的附件
         Log.e(TAG, "handleAccept")
+        LogHelper.getInstance().saveLog(TAG, "handleAccept")
         channel.register(key.selector(), SelectionKey.OP_READ)
     }
 
     @Throws(IOException::class)
     override fun handleRead(key: SelectionKey) {
         Log.e(TAG, "handleRead")
-
+        LogHelper.getInstance().saveLog(TAG, "handleRead")
         val channel = key.channel() as SocketChannel
         //获取该信道所关联的附件，这里为缓冲区
         //        ByteBuffer buf = (ByteBuffer) key.attachment();
@@ -52,13 +53,16 @@ class EchoSelectorProtocol internal constructor(private val context: Context) : 
         val bytesRead = channel.read(receivebuffer)
         if (bytesRead == -1) {
             Log.e(TAG, "channel.close()")
+            LogHelper.getInstance().saveLog(javaClass.simpleName, "channel.close()")
             channel.close()
         } else if (bytesRead > 0) {
             Log.e(TAG, receivebuffer.array().toString())
+            LogHelper.getInstance().saveLog(javaClass.simpleName, receivebuffer.array().toString())
             try {
+                LogHelper.getInstance().saveLog(TAG, "接受数据")
                 val command = transform!!.map(receivebuffer.array(), bytesRead) as Command?
                 val response = command?.executor()
-
+                LogHelper.getInstance().saveLog(TAG, "处理完命令 ${response?.size}")
                 channel.register(key.selector(), SelectionKey.OP_WRITE, ByteBuffer.wrap(response))
 
             } catch (exp: MessageException) {
@@ -88,11 +92,12 @@ class EchoSelectorProtocol internal constructor(private val context: Context) : 
 
         sendbuffer.put(buf)
         sendbuffer.flip()
-
+        LogHelper.getInstance().saveLog(TAG, "发送数据")
         channel.write(sendbuffer)
         if (!sendbuffer.hasRemaining()) {
             //如果缓冲区中的数据已经全部写入了信道，则将该信道感兴趣的操作设置为可读
             key.interestOps(SelectionKey.OP_READ)
+            LogHelper.getInstance().saveLog(TAG, "发送完成设为可读")
         }
         //为读入更多的数据腾出空间
         sendbuffer.compact()
