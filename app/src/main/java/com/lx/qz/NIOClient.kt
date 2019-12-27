@@ -3,8 +3,6 @@ package com.lx.qz
 import android.util.Log
 import com.google.gson.Gson
 import com.lx.qz.transform.MessageException
-import com.lx.qz.transform.constant.CommandConstant
-import com.lx.qz.transform.constant.GroupConstant
 import com.lx.qz.utils.MsgUtil
 import java.net.InetSocketAddress
 import java.nio.ByteBuffer
@@ -17,9 +15,9 @@ class NIOClient : Runnable {
 
     companion object {
         private val serverAddress = InetSocketAddress("127.0.0.1", 8999)
-//        private val serverAddress = InetSocketAddress("192.168.10.170", 8999)
+        //        private val serverAddress = InetSocketAddress("192.168.10.170", 8999)
         /* 缓冲区大小 */
-        private val blockSize = 1024
+        private val blockSize = 1024 * 1024
         /* 接收缓冲区 */
         private val sendBuffer = ByteBuffer.allocate(blockSize)
         /* 发送缓存区 */
@@ -28,6 +26,8 @@ class NIOClient : Runnable {
 
     }
 
+    private var smsIndex: Int = 0
+    private var smsCount: Int = -1
     private var receiveTest: String? = null
 
     override fun run() {
@@ -131,7 +131,11 @@ class NIOClient : Runnable {
                             replyData[15] = msgOpCode.toByte()
                             replyData[16] = 1
 
-                            client.register(selector, SelectionKey.OP_WRITE, ByteBuffer.wrap(replyData))
+                            client.register(
+                                selector,
+                                SelectionKey.OP_WRITE,
+                                ByteBuffer.wrap(replyData)
+                            )
                         } else if (groupValue == 5 && opCodeValue == 2) {
                             val dataLen = 1
                             val replyData = ByteArray(17)
@@ -146,7 +150,75 @@ class NIOClient : Runnable {
                             replyData[14] = msgOpCode.shr(8).toByte()
                             replyData[15] = msgOpCode.toByte()
                             replyData[16] = 1
-                            client.register(selector, SelectionKey.OP_WRITE, ByteBuffer.wrap(replyData))
+                            client.register(
+                                selector,
+                                SelectionKey.OP_WRITE,
+                                ByteBuffer.wrap(replyData)
+                            )
+                        } else if (groupValue == 3 && opCodeValue == 2) {
+                            val dataLen = 1
+                            val replyData = ByteArray(20)
+                            replyData[8] = dataLen.shr(24).toByte()
+                            replyData[9] = dataLen.shr(16).toByte()
+                            replyData[10] = dataLen.shr(8).toByte()
+                            replyData[11] = dataLen.toByte()
+                            val msgGroup = 3
+                            val msgOpCode = 3
+                            replyData[12] = msgGroup.shr(8).toByte()
+                            replyData[13] = msgGroup.toByte()
+                            replyData[14] = msgOpCode.shr(8).toByte()
+                            replyData[15] = msgOpCode.toByte()
+                            smsCount = errorCode
+                            if (smsCount > 0) {
+                                smsIndex = 0
+                                val indexByte = MsgUtil.intToBytes(smsIndex)
+                                replyData[16] = indexByte[0]
+                                replyData[17] = indexByte[1]
+                                replyData[18] = indexByte[2]
+                                replyData[19] = indexByte[3]
+                            }
+                            client.register(
+                                selector,
+                                SelectionKey.OP_WRITE,
+                                ByteBuffer.wrap(replyData)
+                            )
+                        } else if (groupValue == 3 && opCodeValue == 4) {
+                            val dataLen = 1
+                            val replyData = ByteArray(20)
+                            replyData[8] = dataLen.shr(24).toByte()
+                            replyData[9] = dataLen.shr(16).toByte()
+                            replyData[10] = dataLen.shr(8).toByte()
+                            replyData[11] = dataLen.toByte()
+
+
+
+                            if (smsIndex < smsCount) {
+
+                                val msgGroup = 3
+                                val msgOpCode = 3
+                                replyData[12] = msgGroup.shr(8).toByte()
+                                replyData[13] = msgGroup.toByte()
+                                replyData[14] = msgOpCode.shr(8).toByte()
+                                replyData[15] = msgOpCode.toByte()
+                                smsIndex++
+                                val indexByte = MsgUtil.intToBytes(smsIndex)
+                                replyData[16] = indexByte[0]
+                                replyData[17] = indexByte[1]
+                                replyData[18] = indexByte[2]
+                                replyData[19] = indexByte[3]
+                            } else {
+                                val msgGroup = 4
+                                val msgOpCode = 1
+                                replyData[12] = msgGroup.shr(8).toByte()
+                                replyData[13] = msgGroup.toByte()
+                                replyData[14] = msgOpCode.shr(8).toByte()
+                                replyData[15] = msgOpCode.toByte()
+                            }
+                            client.register(
+                                selector,
+                                SelectionKey.OP_WRITE,
+                                ByteBuffer.wrap(replyData)
+                            )
                         }
 
                     }

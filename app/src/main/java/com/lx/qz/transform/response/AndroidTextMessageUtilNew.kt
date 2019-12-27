@@ -137,9 +137,9 @@ object AndroidTextMessageUtilNew {
                 description.put("snippet", snippet)
                 description.put("addresses", addresses)
 
-                if (checkConversationIsValid(snippet, address)) {
+//                if (checkConversationIsValid(snippet, address)) {
                     root.put("description", description)
-                }
+//                }
 
                 val message = Uri.parse("content://sms/")
                 smsCursor =
@@ -430,9 +430,9 @@ object AndroidTextMessageUtilNew {
                     Log.d(TAG, "snippet: $snippet")
                     */
 //                    conversationArray.add(threadId)
-                    if (checkConversationIsValid(snippet, address)) {
+//                    if (checkConversationIsValid(snippet, address)) {
                         conversationArray.add(threadId)
-                    }
+//                    }
 
                 }
             }

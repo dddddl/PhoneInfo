@@ -10,7 +10,7 @@ import java.util.Date;
 
 public class LogHelper {
 
-    public static volatile LogHelper m_instance = null;
+    private static volatile LogHelper m_instance = null;
     String m_filename;
     String SDPATH;
 

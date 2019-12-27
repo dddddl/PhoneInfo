@@ -55,14 +55,14 @@ class EchoSelectorProtocol internal constructor(private val context: Context) : 
             Log.e(TAG, "channel.close()")
             LogHelper.getInstance().saveLog(javaClass.simpleName, "channel.close()")
             channel.close()
+            throw Exception("连接断开")
         } else if (bytesRead > 0) {
             Log.e(TAG, receivebuffer.array().toString())
-            LogHelper.getInstance().saveLog(javaClass.simpleName, receivebuffer.array().toString())
             try {
                 LogHelper.getInstance().saveLog(TAG, "接受数据")
                 val command = transform!!.map(receivebuffer.array(), bytesRead) as Command?
                 val response = command?.executor()
-                LogHelper.getInstance().saveLog(TAG, "处理完命令 ${response?.size}")
+                LogHelper.getInstance().saveLog(TAG, "处理完命令")
                 channel.register(key.selector(), SelectionKey.OP_WRITE, ByteBuffer.wrap(response))
 
             } catch (exp: MessageException) {

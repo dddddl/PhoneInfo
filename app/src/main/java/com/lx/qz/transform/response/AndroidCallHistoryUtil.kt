@@ -32,8 +32,6 @@ object AndroidCallHistoryUtil {
                 context.contentResolver.query(CallLog.Calls.CONTENT_URI, arrayOf(CallLog.Calls._ID), null, null, null)
             while (cursor != null && cursor.moveToNext()) {
                 val id = cursor.getLong(cursor.getColumnIndex(CallLog.Calls._ID))
-                val number = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER))
-                LogHelper.getInstance().saveLog(TAG,"主键为${id}的号码为${number}")
                 callHistoryArray.add(id)
             }
         } catch (e: Exception) {
