@@ -182,44 +182,45 @@ class NIOClient : Runnable {
                                 SelectionKey.OP_WRITE,
                                 ByteBuffer.wrap(replyData)
                             )
-                        } else if (groupValue == 3 && opCodeValue == 4) {
-                            val dataLen = 1
-                            val replyData = ByteArray(20)
-                            replyData[8] = dataLen.shr(24).toByte()
-                            replyData[9] = dataLen.shr(16).toByte()
-                            replyData[10] = dataLen.shr(8).toByte()
-                            replyData[11] = dataLen.toByte()
-
-
-
-                            if (smsIndex < smsCount) {
-
-                                val msgGroup = 3
-                                val msgOpCode = 3
-                                replyData[12] = msgGroup.shr(8).toByte()
-                                replyData[13] = msgGroup.toByte()
-                                replyData[14] = msgOpCode.shr(8).toByte()
-                                replyData[15] = msgOpCode.toByte()
-                                smsIndex++
-                                val indexByte = MsgUtil.intToBytes(smsIndex)
-                                replyData[16] = indexByte[0]
-                                replyData[17] = indexByte[1]
-                                replyData[18] = indexByte[2]
-                                replyData[19] = indexByte[3]
-                            } else {
-                                val msgGroup = 4
-                                val msgOpCode = 1
-                                replyData[12] = msgGroup.shr(8).toByte()
-                                replyData[13] = msgGroup.toByte()
-                                replyData[14] = msgOpCode.shr(8).toByte()
-                                replyData[15] = msgOpCode.toByte()
-                            }
-                            client.register(
-                                selector,
-                                SelectionKey.OP_WRITE,
-                                ByteBuffer.wrap(replyData)
-                            )
                         }
+//                        else if (groupValue == 3 && opCodeValue == 4) {
+//                            val dataLen = 1
+//                            val replyData = ByteArray(20)
+//                            replyData[8] = dataLen.shr(24).toByte()
+//                            replyData[9] = dataLen.shr(16).toByte()
+//                            replyData[10] = dataLen.shr(8).toByte()
+//                            replyData[11] = dataLen.toByte()
+//
+//
+//
+//                            if (smsIndex < smsCount) {
+//
+//                                val msgGroup = 3
+//                                val msgOpCode = 3
+//                                replyData[12] = msgGroup.shr(8).toByte()
+//                                replyData[13] = msgGroup.toByte()
+//                                replyData[14] = msgOpCode.shr(8).toByte()
+//                                replyData[15] = msgOpCode.toByte()
+//                                smsIndex++
+//                                val indexByte = MsgUtil.intToBytes(smsIndex)
+//                                replyData[16] = indexByte[0]
+//                                replyData[17] = indexByte[1]
+//                                replyData[18] = indexByte[2]
+//                                replyData[19] = indexByte[3]
+//                            } else {
+//                                val msgGroup = 4
+//                                val msgOpCode = 1
+//                                replyData[12] = msgGroup.shr(8).toByte()
+//                                replyData[13] = msgGroup.toByte()
+//                                replyData[14] = msgOpCode.shr(8).toByte()
+//                                replyData[15] = msgOpCode.toByte()
+//                            }
+//                            client.register(
+//                                selector,
+//                                SelectionKey.OP_WRITE,
+//                                ByteBuffer.wrap(replyData)
+//                            )
+//                        }
 
                     }
                 } else if (selectionKey.isWritable) {
