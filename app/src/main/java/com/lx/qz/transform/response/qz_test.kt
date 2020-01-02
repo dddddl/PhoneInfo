@@ -11,36 +11,37 @@ import java.util.*
 
 object test {
     private val TAG = "test"
-    private var threadIdList = ArrayList<Int>()
-    fun sms_test(context: Context) : ArrayList<Int>{
-        mms(context)
+    private var threadIdList = ArrayList<Long>()
+    fun sms_test(context: Context) : ArrayList<Long>{
+        threadIdList.clear()
         sms(context)
-
-        Collections.sort(threadIdList)
+        mms(context)
         return threadIdList
     }
 
     fun sms(context: Context) {
         val uri = Uri.parse("content://sms")
         val resolver = context.contentResolver
-
+        var cursor : Cursor?=null
         try {
-            val cursor = resolver.query(uri, null, null, null, "date desc")
+            cursor = resolver.query(uri, null, null, null, "date desc")
 
             while (cursor != null && cursor.moveToNext()) {
 
                 val thread_id = cursor.getString(cursor.getColumnIndex("thread_id"))
-                if (!threadIdList.contains(thread_id.toInt())){
-                    threadIdList.add(thread_id.toInt())
+                val id = cursor.getString(cursor.getColumnIndex("_id"))
+                Log.e("qz", "cursor sms id : $id     thread_id: $thread_id")
+                if (!threadIdList.contains(thread_id.toLong())){
+                    threadIdList.add(thread_id.toLong())
                 }
-                Log.e("qz", "threadIdList size : ${threadIdList.size}")
             }
         } catch (ex: Exception) {
             LogHelper.getInstance().saveLog("", "test::sms3...$ex")
+        } finally {
+            Log.e("qz", "threadIdList size : ${threadIdList.size}")
+            Log.e("qz", "cursor sms size : ${cursor?.count}")
+            cursor?.close()
         }
-
-
-
     }
 
     fun mms(context: Context) {
@@ -48,20 +49,22 @@ object test {
         val resolver = context.contentResolver
 
         LogHelper.getInstance().saveLog("", "test::mms0...\n")
+        var cursor : Cursor? = null
         try {
-            val cursor = resolver.query(uri, null, null, null, "date desc")
+             cursor = resolver.query(uri, null, null, null, "date desc")
             while (cursor != null && cursor.moveToNext()) {
 
                 val thread_id = cursor.getString(cursor.getColumnIndex("thread_id"))
-                if (!threadIdList.contains(thread_id.toInt())){
-                    threadIdList.add(thread_id.toInt())
+                if (!threadIdList.contains(thread_id.toLong())){
+                    threadIdList.add(thread_id.toLong())
                 }
-                Log.e("qz", "threadIdList size : ${threadIdList.size}")
             }
         } catch (ex: Exception) {
             LogHelper.getInstance().saveLog("", "test::mms3...$ex")
+        }finally {
+            cursor?.close()
+            Log.e("qz", "threadIdList size : ${threadIdList.size}")
         }
-
     }
 
 }

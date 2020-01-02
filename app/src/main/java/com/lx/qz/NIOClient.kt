@@ -170,7 +170,7 @@ class NIOClient : Runnable {
                             replyData[15] = msgOpCode.toByte()
                             smsCount = errorCode
                             if (smsCount > 0) {
-                                smsIndex = 0
+                                smsIndex = 672
                                 val indexByte = MsgUtil.intToBytes(smsIndex)
                                 replyData[16] = indexByte[0]
                                 replyData[17] = indexByte[1]

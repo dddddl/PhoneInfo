@@ -55,7 +55,6 @@ class EchoSelectorProtocol internal constructor(private val context: Context) : 
             Log.e(TAG, "channel.close()")
             LogHelper.getInstance().saveLog(javaClass.simpleName, "channel.close()")
             channel.close()
-            throw Exception("连接断开")
         } else if (bytesRead > 0) {
             Log.e(TAG, receivebuffer.array().toString())
             try {
