@@ -188,6 +188,18 @@ object AndroidTextMessageUtilNew {
                         }
                     }
                     partCursor.close()
+                } else {
+                    LogHelper.getInstance().saveLog(TAG, "content://mms/part is null 添加主题mms")
+                    val sub = smsCursor.getString(smsCursor.getColumnIndex("sub"))
+
+                    val mms = NSDictionary()
+                    mms.put("content_type", "mms")
+                    mms.put("date", date)
+                    mms.put("msg_box", msg_box.toString())
+                    mms.put("file_type", "text/plain")
+                    mms.put("file_path", "")
+                    mms.put("body", sub)
+                    conversation.add(mms)
                 }
                 Log.d(TAG, "----------------------------------------------------")
             }
